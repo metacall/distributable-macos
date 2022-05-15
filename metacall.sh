@@ -2,7 +2,7 @@
 
 LOC=metacall
 PATH=$PATH:$LOC:$LOC/lib
-PYTHOHOME=$LOC/runtimes/python
+PYTHONHOME=$LOC/runtimes/python
 PIP_TARGET=$LOC/runtimes/python/Pip
 # Python
 PATH=$PATH:$LOC/runtimes/python:$LOC/runtimes/python/Scripts
