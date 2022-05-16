@@ -1,4 +1,4 @@
-name: MacOSX bigsur MetaCall build
+name: MacOSX BigSur MetaCall build
 on: [push]
 jobs:
   build-action:
