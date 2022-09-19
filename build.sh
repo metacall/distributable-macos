@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -o nounset # raise error if a var is not defined
+set -exuo pipefail
 
 echo "Checking Compiler and Build System"
 command -v cmake &>/dev/null && CMAKE_PRESENT=1
@@ -27,9 +27,9 @@ download() {
 }
 
 get_latest_release() {
-  curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
-    grep '"tag_name":' |                                            # Get tag line
-    sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
+  curl --silent "https://api.github.com/repos/$1/releases/latest" # Get latest release from GitHub api
+    | grep '"tag_name":'                                          # Get tag line
+    | sed -E 's/.*"([^"]+)".*/\1/'                                # Pluck JSON value
 }
 
 download_from_github() {
@@ -72,11 +72,11 @@ download_dotnet(){
   echo "Downloading Dotnet" && return 0
   download "" dotnet || return 1
 }
+
 download_ruby(){
   echo "Downloading Ruby" && return 0
   download "" ruby || return 1
 }
-
 
 download_dependencies() {
   echo "Downloading dependencies"
@@ -116,14 +116,23 @@ install_deps() {
 build_meta() {
   cd "$LOC" || error "cd $LOC failed"
   echo "Building MetaCall" 
+
+  # Install Python certificates
+  bash /Applications/Python*/Install\ Certificates.command
+
+  # Clone repo
   if [ ! -d "$LOC/core" ] ; then # if repo does not exist
     git clone --depth 1 "$UPSTREAM_URL" || error "Git clone metacall/core failed"
   else
     cd "$LOC/core"
     git pull "$UPSTREAM_URL" || error "Git pull failed" # if it does we just pull
   fi
+
+  # Create build folder
   mkdir -p "$LOC/core/build"
   cd "$LOC/core/build" || error "cd $LOC/core/build failed" 
+
+  # Configure
   cmake -Wno-dev \
     -DCMAKE_BUILD_TYPE=Release \
     -DOPTION_BUILD_SECURITY=OFF \
@@ -141,6 +150,8 @@ build_meta() {
     -DOPTION_BUILD_PORTS_NODE=ON \
     -DCMAKE_INSTALL_PREFIX="$LOC" \
     -G "Unix Makefiles" .. || error "Cmake configuration failed."
+
+  # Build
   cmake --build . --target install || error "Cmake build target install failed."
 }
 
