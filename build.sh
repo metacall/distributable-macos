@@ -124,7 +124,7 @@ build_meta() {
   # Install XCode dependencies
   sudo xcode-select --install
   sudo xcode-select --switch /Library/Developer/CommandLineTools
-  ln -s /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/ /usr/include
+  sudo ln -sf /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/ /usr/include
 
   # Clone repo
   if [ ! -d "$LOC/core" ] ; then # if repo does not exist
