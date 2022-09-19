@@ -122,7 +122,7 @@ build_meta() {
   bash /Applications/Python\ 3*/Update\ Shell\ Profile.command
 
   # Install XCode dependencies
-  xcode-select --install
+  xcode-select --switch /Library/Developer/CommandLineTools
 
   # Clone repo
   if [ ! -d "$LOC/core" ] ; then # if repo does not exist
