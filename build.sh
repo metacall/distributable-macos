@@ -121,6 +121,9 @@ build_meta() {
   bash /Applications/Python\ 3*/Install\ Certificates.command
   bash /Applications/Python\ 3*/Update\ Shell\ Profile.command
 
+  # Install XCode dependencies
+  xcode-select --install
+
   # Clone repo
   if [ ! -d "$LOC/core" ] ; then # if repo does not exist
     git clone --depth 1 "$UPSTREAM_URL" || error "Git clone metacall/core failed"
