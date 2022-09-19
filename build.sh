@@ -118,7 +118,8 @@ build_meta() {
   echo "Building MetaCall" 
 
   # Install Python certificates
-  bash /Applications/Python*/Install\ Certificates.command
+  bash /Applications/Python\ 3*/Install\ Certificates.command
+  bash /Applications/Python\ 3*/Update\ Shell\ Profile.command
 
   # Clone repo
   if [ ! -d "$LOC/core" ] ; then # if repo does not exist
