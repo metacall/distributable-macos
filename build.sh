@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
+
 set -o nounset # raise error if a var is not defined
+
 echo "Checking Compiler and Build System"
 command -v cmake &>/dev/null && CMAKE_PRESENT=1
 command -v curl &>/dev/null && CURL_PRESENT=1
@@ -130,13 +132,13 @@ build_meta() {
     -DOPTION_BUILD_TESTS=OFF \
     -DOPTION_BUILD_EXAMPLES=OFF \
     -DOPTION_BUILD_LOADERS_PY=ON \
-    -DOPTION_BUILD_LOADERS_NODE=OFF \
+    -DOPTION_BUILD_LOADERS_NODE=ON \
     -DOPTION_BUILD_LOADERS_CS=OFF \
     -DOPTION_BUILD_LOADERS_RB=OFF \
-    -DOPTION_BUILD_LOADERS_TS=OFF \
+    -DOPTION_BUILD_LOADERS_TS=ON \
     -DOPTION_BUILD_PORTS=ON \
     -DOPTION_BUILD_PORTS_PY=ON \
-    -DOPTION_BUILD_PORTS_NODE=OFF \
+    -DOPTION_BUILD_PORTS_NODE=ON \
     -DCMAKE_INSTALL_PREFIX="$LOC" \
     -G "Unix Makefiles" .. || error "Cmake configuration failed."
   cmake --build . --target install || error "Cmake build target install failed."

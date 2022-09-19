@@ -1,18 +1,18 @@
-name: MacOSX Python loader test
-on: [push]
-jobs:
-  job:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-10.15, macos-latest, macos-12]
-    steps:
-      - uses: actions/checkout@v3
-      - run: chmod +x ./build.sh
-      - run: ./build.sh
-      - run: unzip -l ./metacall-tarball-macos-x64.zip
-      - run: cd /tmp && unzip "/Users/runner/work/distributable-macos/distributable-macos/metacall-tarball-macos-x64.zip"
-      - run: echo "print(\"Hello World from Python GitHub Actions\")" > /tmp/py-eval-test.py
-      - run: chmod +x /tmp/metacall.sh
-      - run: /tmp/metacall/metacallcli.app/Contents/MacOS/metacallcli /tmp/py-eval-test.py
-      - run: /tmp/metacall.sh /tmp/py-eval-test.py
+# name: MacOSX Python loader test
+# on: [push]
+# jobs:
+#   job:
+#     runs-on: ${{ matrix.os }}
+#     strategy:
+#       matrix:
+#         os: [macos-10.15, macos-latest, macos-12]
+#     steps:
+#       - uses: actions/checkout@v3
+#       - run: chmod +x ./build.sh
+#       - run: ./build.sh
+#       - run: unzip -l ./metacall-tarball-macos-x64.zip
+#       - run: cd /tmp && unzip "/Users/runner/work/distributable-macos/distributable-macos/metacall-tarball-macos-x64.zip"
+#       - run: echo "print(\"Hello World from Python GitHub Actions\")" > /tmp/py-eval-test.py
+#       - run: chmod +x /tmp/metacall.sh
+#       - run: /tmp/metacall/metacallcli.app/Contents/MacOS/metacallcli /tmp/py-eval-test.py
+#       - run: /tmp/metacall.sh /tmp/py-eval-test.py

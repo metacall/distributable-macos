@@ -12,7 +12,7 @@ PATH=$PATH:$LOC/lib/runtimes/nodejs:$LOC/lib/runtimes/nodejs/lib
 PATH=$PATH:$LOC/lib/runtimes/dotnet:$LOC/lib/runtimes/dotnet/host/fxr/ # TODO: Add version
 
 # Check if it is running a package manager and execute it
-# WTF
+# TODO
 
 # MetaCall Environment
 CORE_ROOT=$LOC/runtimes/dotnet/shared/Microsoft.NETCore.App/ # TODO: Add version
