@@ -3,7 +3,7 @@ on: [push]
 jobs:
   build:
     name: "Build MetaCall"
-    runs-on: macos-11.7
+    runs-on: macos-12
     steps:
       - uses: actions/checkout@v3
       - run: chmod +x ./build.sh
