@@ -1,7 +1,8 @@
-name: MacOSX BigSur MetaCall build
+name: MacOSX MetaCall Build
 on: [push]
 jobs:
-  build-action:
+  build:
+    name: "Build MetaCall"
     runs-on: macos-10.15
     steps:
       - uses: actions/checkout@v3
