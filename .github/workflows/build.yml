@@ -1,5 +1,5 @@
 name: MacOSX MetaCall Build
-on: [push]
+on: [pull_request]
 jobs:
   build:
     name: "Build MetaCall"
