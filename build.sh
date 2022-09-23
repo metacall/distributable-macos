@@ -5,14 +5,13 @@ set -exuo pipefail
 echo "Checking Compiler and Build System"
 command -v cmake &>/dev/null && CMAKE_PRESENT=1
 command -v curl &>/dev/null && CURL_PRESENT=1
-command -v wget &>/dev/null && WGET_PRESENT=1
 
 error() {
 	echo "Error: $1, build stopping, probably dependencies could not be downloaded."
 	exit 1
 }
 
-echo "CMAKE:$CMAKE_PRESENT,CURL:$CURL_PRESENT,WGET:$WGET_PRESENT"
+echo "CMAKE:$CMAKE_PRESENT,CURL:$CURL_PRESENT"
 [[ -n "$CURL_PRESENT" ]] || error "CURL is not present and is absolutely required for now."
 
 MOUNTED_CMAKE_PATH="" # Global for cleanup phase
@@ -21,6 +20,8 @@ UPSTREAM_URL="https://github.com/metacall/core.git"
 LOC="$PWD/metacall"
 CWD="$PWD"
 (mkdir -p "$LOC" && cd "$LOC") || error "cd $LOC failed"
+PYTHON_LOC="$LOC/runtimes/python"
+RUBY_LOC="$LOC/runtimes/ruby"
 
 download() {
 	curl -sL "$1" -o "$2" || return 1
@@ -50,23 +51,6 @@ download_cmake() {
 	# TODO: CLEANUP see cleanup functions
 }
 
-check_python3() {
-	for filename in /Applications/* $LOC/runtimes/python/*;do
-		if [[ "$filename" =~ "Python".* ]];then # regexp for Python 3.XX
-			return 1 # Python is installed
-		 else 
-			return 0 # Consider no Python installed (ignoring the xcode one for now)
-		fi
-	done
-}
-
-download_install_python3(){
-	echo "Downloading Python3"
-	download "https://www.python.org/ftp/python/3.10.4/python-3.10.4-macos11.pkg" python3.pkg || return 1
-	echo "Installing Python3 with Universal pkg file"
-	mkdir -p "$LOC/runtimes/python"
-	sudo installer -pkg python3.pkg -target "$LOC/runtimes/python" || error "Python installation failed"
-}
 
 download_dotnet(){
 	echo "Downloading Dotnet" && return 0
@@ -83,14 +67,9 @@ download_dependencies() {
 	# DOWNLOAD just about everything, we need for portability.
 	mkdir -p "$LOC/dependencies"
 	cd "$LOC/dependencies" || error "cd $LOC/dependencies failed"
-	check_python3
-	PYTHON_PRESENT=$?
-	echo "Value of Python Present is: $PYTHON_PRESENT"
-	if [[ PYTHON_PRESENT -eq 0 ]];then
-		download_install_python3 || error "Python3 download failed" 
-	fi
-	download_dotnet || error "Dotnet-sdk download failed"
-	download_ruby   || error "Ruby download failed"
+  download_install_python3 || error "Python3 download failed" 
+	#download_dotnet || error "Dotnet-sdk download failed"
+	#download_ruby   || error "Ruby download failed"
 	# TODO: Download Dotnet sdk/runtime binaries add to path
 	# TODO: Download Ruby either RubyMotion or RubyApp 
 	# https://github.com/gosu/ruby-app
@@ -100,9 +79,9 @@ extract_deps() {
 	declare runtime_folder="$1"
 	mkdir -p "$runtime_folder"
 	echo "Extracting archives"
-	mkdir -p "$LOC/runtimes/ruby"
-	#mkdir -p "$LOC/runtimes/python"
-	mkdir -p "$LOC/runtimes/dotnet"
+	#mkdir -p "$LOC/runtimes/ruby"
+	mkdir -p "$LOC/runtimes/python"
+	#mkdir -p "$LOC/runtimes/dotnet"
 	mkdir -p "$LOC/runtimes/nodejs"
 	#extract_python3 $runtime_folder
 	#extract_dotnet $runtime_folder/dotnet
@@ -111,6 +90,38 @@ extract_deps() {
 
 install_deps() {
 	echo "Install dependency"
+}
+
+
+download_install_python3(){
+  mkdir -p "$PYTHON_LOC"
+  echo "Downloading Python3"
+  cd "$PYTHON_LOC"
+  git clone "https://github.com/gregneagle/relocatable-python" || echo "Make sure that you cloned gregneabgle/relocatable-python"
+  echo "Making Python3 relocatable in $PYTHON_LOC"
+  "$PYTHON_LOC"/relocatable-python/make_relocatable_python_framework.py --destination "$PYTHON_LOC" --python-version 3.7.4 || error "Python 3 relocatable make failed."
+}
+
+patch_cmake_python() {
+  echo "set(Python_VERSION 3.7.4)"> "$LOC/core/cmake/FindPython.cmake"
+  echo "set(Python_ROOT_DIR "$LOC/runtimes/python/Python.framework")">> "$LOC/core/cmake/FindPython.cmake"
+  echo "set(Python_EXECUTABLE \"$LOC/runtimes/python/Python.framework/Resources/Python.app/Contents/MacOS/Python\")">> "$LOC/core/cmake/FindPython.cmake"
+  echo "set(Python_INCLUDE_DIRS \"$LOC/runtimes/python/Python.framework/Versions/Current/include/python3.7m\")">> "$LOC/core/cmake/FindPython.cmake"
+  echo "set(Python_LIBRARIES \"$LOC/runtimes/python/Python.framework/Versions/Current/lib/libpython3.7.dylib\")">> "$LOC/core/cmake/FindPython.cmake"
+  echo "include(FindPackageHandleStandardArgs)">> "$LOC/core/cmake/FindPython.cmake"
+  echo "FIND_PACKAGE_HANDLE_STANDARD_ARGS(Python REQUIRED_VARS Python_EXECUTABLE Python_LIBRARIES Python_INCLUDE_DIRS VERSION_VAR Python_VERSION)">> "$LOC/core/cmake/FindPython.cmake"
+  echo "mark_as_advanced(Python_EXECUTABLE Python_LIBRARIES Python_INCLUDE_DIRS)">> "$LOC/core/cmake/FindPython.cmake"
+}
+
+patch_cmake_ruby() {
+  echo "set(Ruby_VERSION 2.4.10)" > "$LOC/core/cmake/FindRuby.cmake"
+  echo "set(Ruby_ROOT_DIR $LOC/runtimes/ruby)" >> "$LOC/core/cmake/FindRuby.cmake"
+  echo "set(Ruby_EXECUTABLE $LOC/runtimes/ruby/bin/ruby)" >> "$LOC/core/cmake/FindRuby.cmake"
+  echo "set(Ruby_INCLUDE_DIRS $LOC/runtimes/ruby/include/;$LOC/runtimes/ruby/include/ruby/)" >> "$LOC/core/cmake/FindRuby.cmake"
+  echo "set(Ruby_LIBRARY "$LOC/runtimes/ruby/lib/x64-vcruntime140-ruby310.lib")" >> "$LOC/core/cmake/FindRuby.cmake"
+  echo "include(FindPackageHandleStandardArgs)" >> "$LOC/core/cmake/FindRuby.cmake"
+  echo "FIND_PACKAGE_HANDLE_STANDARD_ARGS(Ruby REQUIRED_VARS Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS VERSION_VAR Ruby_VERSION)" >> "$LOC/core/cmake/FindRuby.cmake"
+  echo "mark_as_advanced(Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS)" >> "$LOC/core/cmake/FindRuby.cmake"
 }
 
 build_meta() {
@@ -176,15 +187,15 @@ cleanup() { # TODO: Put right when we don't need anymore lots of files
 						# the cleanup
 	echo Cleaning up && return 0
 	hdiutil detach "$MOUNTED_CMAKE_PATH" || error #cleanup CMAKE 
-	# TODO: Delete file donwloaded from upstream
+	# TODO: Delete file downloaded from upstream
 }
 
 
 make_tarball() {
 	cd "$CWD" || error "cd $CWD failed"
-	echo "Compressing Tarball"
+	echo "Compressing tarball"
 	cmake -E tar "cf" "$CWD/metacall-tarball-macos-x64.zip" --format=zip "$LOC" "$CWD/metacall.sh"
-	echo "Tarball compressed successfully."
+	echo "tarball compressed successfully."
 	return 0
 }
 
