@@ -1,16 +1,34 @@
-name: MacOSX MetaCall Build
-on: [pull_request]
+name: MacOSX BigSur MetaCall build
+on: [push]
 jobs:
-  build:
-    name: "Build MetaCall"
-    runs-on: macos-12
+  build-action:
+    runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
-      - run: chmod +x ./build.sh
-      - run: ./build.sh
-      - run: unzip -l ./metacall-tarball-macos-x64.zip
-#       - run: cd /tmp && unzip "/Users/runner/work/distributable-macos/distributable-macos/metacall-tarball-macos-x64.zip"
-#       - run: echo "print(\"Hello World from Python GitHub Actions\")" > /tmp/py-eval-test.py
-#       - run: chmod +x /tmp/metacall.sh
-#       - run: /tmp/metacall/metacallcli.app/Contents/MacOS/metacallcli /tmp/py-eval-test.py
-#       - run: /tmp/metacall.sh /tmp/py-eval-test.py
+      - name: Checkout upstream MetaCall Distributable MacOS 
+        uses: actions/checkout@v3
+      - run: | 
+          chmod +x ./build.sh
+          ./build.sh
+      - name: Upload build tarball production artifacts
+        uses: actions/upload-artifact@v3
+        with: 
+          name: metacall-tarball
+          path: metacall-tarball-macos-x64.zip
+          if-no-files-found: error
+  python-tests:
+    name: Python loader tests
+    needs: build-action
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, macos-12, macos-10.15]
+    steps:
+      - name: Download build/artifact from cache
+        uses: actions/download-artifact@v3
+        with:
+          name: metacall-tarball
+          path: tarball
+      - run: | 
+          unzip tarball/metacall-tarball-macos-x64.zip
+          echo "print(\"Hello World from Python GitHub Actions\")" > py-eval-test.py
+          ./metacall.sh ./py-eval-test.py
