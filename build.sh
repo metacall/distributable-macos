@@ -203,7 +203,7 @@ post_build() {
 	echo "Deleting unecessary temp folders."
 	rm -rf "$LOC/core"
 	rm -rf "$LOC/dependencies"
-	rm -rf "$LOC/runtimes"
+	#rm -rf "$LOC/runtimes"
 	# TODO: Delete runtimes/dotnet/include & runtimes/python/ if present
 	# TODO: move library dependencies to the correct folders for 
 	# libnode & ruby if needed
