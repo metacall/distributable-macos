@@ -14,6 +14,24 @@ PATH=$PATH:$LOC/lib/runtimes/dotnet:$LOC/lib/runtimes/dotnet/host/fxr/ # TODO: A
 PATH=$PATH:$LOC/lib/runtimes/ruby/bin:$LOC/lib/runtimes/ruby/bin/ruby_builtin_dll
 
 
+# Package Managers Paths
+pip_path="$LOC/runtimes/python/Pip/bin/pip"
+pip3_path="$LOC/runtimes/python/Pip/bin/pip3"
+npm_path="$LOC/runtimes/nodejs/npm"
+npx_path="$LOC/runtimes/nodejs/npx"
+bundle_path="$LOC/runtimes/ruby/bin/bundle"
+bundler_path="$LOC/runtimes/ruby/bin/bundler"
+erb_path="$LOC/runtimes/ruby/bin/erb"
+gem_path="$LOC/runtimes/ruby/bin/gem"
+irb_path="$LOC/runtimes/ruby/bin/irb"
+racc_path="$LOC/runtimes/ruby/bin/racc"
+rake_path="$LOC/runtimes/ruby/bin/rake"
+rbs_path="$LOC/runtimes/ruby/bin/rbs"
+rdbg_path="$LOC/runtimes/ruby/bin/rdbg"
+rdoc_path="$LOC/runtimes/ruby/bin/rdoc"
+ri_path="$LOC/runtimes/ruby/bin/ri"
+typeprof_path="$LOC/runtimes/ruby/bin/typeprof"
+
 
 # Check if it is running a package manager and execute it
 # TODO
