@@ -16,19 +16,22 @@ echo "CMAKE:$CMAKE_PRESENT,CURL:$CURL_PRESENT"
 
 MOUNTED_CMAKE_PATH="" # Global for cleanup phase
 UPSTREAM_URL="https://github.com/metacall/core.git" 
+
 # TODO: Download and add to PATH, dotnet binaries
 LOC="$PWD/metacall"
 CWD="$PWD"
 (mkdir -p "$LOC" && cd "$LOC") || error "cd $LOC failed"
 PYTHON_LOC="$LOC/runtimes/python"
 RUBY_LOC="$LOC/runtimes/ruby"
+NODEJS_LOC="$LOC/runtimes/nodejs"
+DOTNET_LOC="$LOC/runtimes/dotnet"
 
 download() {
 	curl -sL "$1" -o "$2" || return 1
 }
 
 get_latest_release() {
-	curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
+		curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
 		grep '"tag_name":' |                                            # Get tag line
 		sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
 }
@@ -67,7 +70,7 @@ download_dependencies() {
 	# DOWNLOAD just about everything, we need for portability.
 	mkdir -p "$LOC/dependencies"
 	cd "$LOC/dependencies" || error "cd $LOC/dependencies failed"
-  download_install_python3 || error "Python3 download failed" 
+  	download_install_python3 || error "Python3 download failed" 
 	#download_dotnet || error "Dotnet-sdk download failed"
 	#download_ruby   || error "Ruby download failed"
 	# TODO: Download Dotnet sdk/runtime binaries add to path
@@ -94,34 +97,38 @@ install_deps() {
 
 
 download_install_python3(){
-  mkdir -p "$PYTHON_LOC"
-  echo "Downloading Python3"
-  cd "$PYTHON_LOC"
-  git clone "https://github.com/gregneagle/relocatable-python" || echo "Make sure that you cloned gregneabgle/relocatable-python"
-  echo "Making Python3 relocatable in $PYTHON_LOC"
-  "$PYTHON_LOC"/relocatable-python/make_relocatable_python_framework.py --destination "$PYTHON_LOC" --python-version 3.7.4 || error "Python 3 relocatable make failed."
+	mkdir -p "$PYTHON_LOC"
+	echo "Downloading Python3"
+	cd "$PYTHON_LOC"
+	git clone "https://github.com/gregneagle/relocatable-python" || echo "Make sure that you cloned gregneabgle/relocatable-python"
+	echo "Making Python3 relocatable in $PYTHON_LOC"
+	python3 "$PYTHON_LOC"/relocatable-python/make_relocatable_python_framework.py --destination "$PYTHON_LOC" --python-version 3.7.4 || error "Python 3 relocatable make failed."
+}
+
+download_install_ruby() {
+	echo "Downloading ruby"
 }
 
 patch_cmake_python() {
-  echo "set(Python_VERSION 3.7.4)"> "$LOC/core/cmake/FindPython.cmake"
-  echo "set(Python_ROOT_DIR "$LOC/runtimes/python/Python.framework")">> "$LOC/core/cmake/FindPython.cmake"
-  echo "set(Python_EXECUTABLE \"$LOC/runtimes/python/Python.framework/Resources/Python.app/Contents/MacOS/Python\")">> "$LOC/core/cmake/FindPython.cmake"
-  echo "set(Python_INCLUDE_DIRS \"$LOC/runtimes/python/Python.framework/Versions/Current/include/python3.7m\")">> "$LOC/core/cmake/FindPython.cmake"
-  echo "set(Python_LIBRARIES \"$LOC/runtimes/python/Python.framework/Versions/Current/lib/libpython3.7.dylib\")">> "$LOC/core/cmake/FindPython.cmake"
-  echo "include(FindPackageHandleStandardArgs)">> "$LOC/core/cmake/FindPython.cmake"
-  echo "FIND_PACKAGE_HANDLE_STANDARD_ARGS(Python REQUIRED_VARS Python_EXECUTABLE Python_LIBRARIES Python_INCLUDE_DIRS VERSION_VAR Python_VERSION)">> "$LOC/core/cmake/FindPython.cmake"
-  echo "mark_as_advanced(Python_EXECUTABLE Python_LIBRARIES Python_INCLUDE_DIRS)">> "$LOC/core/cmake/FindPython.cmake"
+	echo "set(Python_VERSION 3.7.4)"> "$LOC/core/cmake/FindPython.cmake"
+	echo "set(Python_ROOT_DIR "$LOC/runtimes/python/Python.framework")">> "$LOC/core/cmake/FindPython.cmake"
+	echo "set(Python_EXECUTABLE \"$LOC/runtimes/python/Python.framework/Resources/Python.app/Contents/MacOS/Python\")">> "$LOC/core/cmake/FindPython.cmake"
+	echo "set(Python_INCLUDE_DIRS \"$LOC/runtimes/python/Python.framework/Versions/Current/include/python3.7m\")">> "$LOC/core/cmake/FindPython.cmake"
+	echo "set(Python_LIBRARIES \"$LOC/runtimes/python/Python.framework/Versions/Current/lib/libpython3.7.dylib\")">> "$LOC/core/cmake/FindPython.cmake"
+	echo "include(FindPackageHandleStandardArgs)">> "$LOC/core/cmake/FindPython.cmake"
+	echo "FIND_PACKAGE_HANDLE_STANDARD_ARGS(Python REQUIRED_VARS Python_EXECUTABLE Python_LIBRARIES Python_INCLUDE_DIRS VERSION_VAR Python_VERSION)">> "$LOC/core/cmake/FindPython.cmake"
+	echo "mark_as_advanced(Python_EXECUTABLE Python_LIBRARIES Python_INCLUDE_DIRS)">> "$LOC/core/cmake/FindPython.cmake"
 }
 
 patch_cmake_ruby() {
-  echo "set(Ruby_VERSION 2.4.10)" > "$LOC/core/cmake/FindRuby.cmake"
-  echo "set(Ruby_ROOT_DIR $LOC/runtimes/ruby)" >> "$LOC/core/cmake/FindRuby.cmake"
-  echo "set(Ruby_EXECUTABLE $LOC/runtimes/ruby/bin/ruby)" >> "$LOC/core/cmake/FindRuby.cmake"
-  echo "set(Ruby_INCLUDE_DIRS $LOC/runtimes/ruby/include/;$LOC/runtimes/ruby/include/ruby/)" >> "$LOC/core/cmake/FindRuby.cmake"
-  echo "set(Ruby_LIBRARY "$LOC/runtimes/ruby/lib/x64-vcruntime140-ruby310.lib")" >> "$LOC/core/cmake/FindRuby.cmake"
-  echo "include(FindPackageHandleStandardArgs)" >> "$LOC/core/cmake/FindRuby.cmake"
-  echo "FIND_PACKAGE_HANDLE_STANDARD_ARGS(Ruby REQUIRED_VARS Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS VERSION_VAR Ruby_VERSION)" >> "$LOC/core/cmake/FindRuby.cmake"
-  echo "mark_as_advanced(Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS)" >> "$LOC/core/cmake/FindRuby.cmake"
+	echo "set(Ruby_VERSION 2.4.10)" > "$LOC/core/cmake/FindRuby.cmake"
+	echo "set(Ruby_ROOT_DIR $LOC/runtimes/ruby)" >> "$LOC/core/cmake/FindRuby.cmake"
+	echo "set(Ruby_EXECUTABLE $LOC/runtimes/ruby/bin/ruby)" >> "$LOC/core/cmake/FindRuby.cmake"
+	echo "set(Ruby_INCLUDE_DIRS $LOC/runtimes/ruby/include/;$LOC/runtimes/ruby/include/ruby/)" >> "$LOC/core/cmake/FindRuby.cmake"
+	echo "set(Ruby_LIBRARY "$LOC/runtimes/ruby/lib/x64-vcruntime140-ruby310.lib")" >> "$LOC/core/cmake/FindRuby.cmake"
+	echo "include(FindPackageHandleStandardArgs)" >> "$LOC/core/cmake/FindRuby.cmake"
+	echo "FIND_PACKAGE_HANDLE_STANDARD_ARGS(Ruby REQUIRED_VARS Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS VERSION_VAR Ruby_VERSION)" >> "$LOC/core/cmake/FindRuby.cmake"
+	echo "mark_as_advanced(Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS)" >> "$LOC/core/cmake/FindRuby.cmake"
 }
 
 build_meta() {
@@ -163,13 +170,13 @@ build_meta() {
 		-DOPTION_BUILD_TESTS=OFF \
 		-DOPTION_BUILD_EXAMPLES=OFF \
 		-DOPTION_BUILD_LOADERS_PY=ON \
-		-DOPTION_BUILD_LOADERS_NODE=ON \
+		-DOPTION_BUILD_LOADERS_NODE=OFF \
 		-DOPTION_BUILD_LOADERS_CS=OFF \
 		-DOPTION_BUILD_LOADERS_RB=OFF \
-		-DOPTION_BUILD_LOADERS_TS=ON \
+		-DOPTION_BUILD_LOADERS_TS=OFF \
 		-DOPTION_BUILD_PORTS=ON \
 		-DOPTION_BUILD_PORTS_PY=ON \
-		-DOPTION_BUILD_PORTS_NODE=ON \
+		-DOPTION_BUILD_PORTS_NODE=OFF \
 		-DCMAKE_INSTALL_PREFIX="$LOC" \
 		-G "Unix Makefiles" .. || error "Cmake configuration failed."
 
@@ -183,8 +190,7 @@ make_metacallcli() {
 	echo "Finished Building MetaCall"
 }
 
-cleanup() { # TODO: Put right when we don't need anymore lots of files
-						# the cleanup
+cleanup() { # TODO: Put right when we don't need anymore lots of files						# the cleanup
 	echo Cleaning up && return 0
 	hdiutil detach "$MOUNTED_CMAKE_PATH" || error #cleanup CMAKE 
 	# TODO: Delete file downloaded from upstream
