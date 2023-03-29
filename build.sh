@@ -70,7 +70,7 @@ download_dependencies() {
 	# DOWNLOAD just about everything, we need for portability.
 	mkdir -p "$LOC/dependencies"
 	cd "$LOC/dependencies" || error "cd $LOC/dependencies failed"
-  	download_install_python3 || error "Python3 download failed" 
+	download_install_python3 || error "Python3 download failed" 
 	#download_dotnet || error "Dotnet-sdk download failed"
 	#download_ruby   || error "Ruby download failed"
 	# TODO: Download Dotnet sdk/runtime binaries add to path
