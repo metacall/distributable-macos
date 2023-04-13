@@ -46,13 +46,13 @@ download_from_github() {
 }
 
 download_cmake() {
-  repo="kitware/cmake"
-  version="$(get_latest_release $repo)"
-  download_from_github "$repo" "$version" "cmake-${version#"v"}-macos-universal.dmg" || return 1
-  MOUNTED_CMAKE_PATH="$(yes | hdiutil attach cmake-${version#"v"}-macos-universal.dmg | tail -n 1 | cut -d$'\t' -f 3)"
-  export PATH="$MOUNTED_CMAKE_PATH/CMake.app/Contents/bin":"$PATH"
-  hdiutil detach "$MOUNTED_CMAKE_PATH"
-  # TODO: CLEANUP see cleanup functions
+	repo="kitware/cmake"
+	version="$(get_latest_release $repo)"
+	download_from_github "$repo" "$version" "cmake-${version#"v"}-macos-universal.dmg" || return 1
+	MOUNTED_CMAKE_PATH="$(yes | hdiutil attach cmake-${version#"v"}-macos-universal.dmg | tail -n 1 | cut -d$'\t' -f 3)"
+	export PATH="$MOUNTED_CMAKE_PATH/CMake.app/Contents/bin":"$PATH"
+	hdiutil detach "$MOUNTED_CMAKE_PATH"
+	# TODO: CLEANUP see cleanup functions
 }
 
 
