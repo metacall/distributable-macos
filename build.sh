@@ -3,8 +3,8 @@
 set -exuo pipefail
 
 echo "Checking Compiler and Build System"
-command -v cmake &>/dev/null && CMAKE_PRESENT=1
-command -v curl &>/dev/null && CURL_PRESENT=1
+command -v cmake &>/dev/null && CMAKE_PRESENT=1 || CMAKE_PRESENT=0
+command -v curl &>/dev/null && CURL_PRESENT=1 || CURL_PRESENT=0
 
 error() {
 	echo "Error: $1, build stopping, probably dependencies could not be downloaded."
@@ -49,9 +49,9 @@ download_cmake() {
 	repo="kitware/cmake"
 	version="$(get_latest_release $repo)"
 	download_from_github "$repo" "$version" "cmake-${version#"v"}-macos-universal.dmg" || return 1
-	echo "Unknown command quitting on purpose" && return 0
 	MOUNTED_CMAKE_PATH="$(yes | hdiutil attach cmake-${version#"v"}-macos-universal.dmg | tail -n 1 | cut -d$'\t' -f 3)"
 	export PATH="$MOUNTED_CMAKE_PATH/CMake.app/Contents/bin":"$PATH"
+	hdiutil detach "$MOUNTED_CMAKE_PATH"
 	# TODO: CLEANUP see cleanup functions
 }
 
@@ -221,3 +221,4 @@ post_build() {
 
 # If cmake is present then use it
 download_dependencies && extract_deps "$LOC/dependencies/runtime" && install_deps && build_meta && make_metacallcli && post_build && make_tarball && cleanup && exit 0
+
