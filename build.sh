@@ -12,9 +12,9 @@ wget https://raw.githubusercontent.com/metacall/homebrew/main/metacall.rb
 
 export HOMEBREW_NO_AUTO_UPDATE=1
 
-# Fix libuv manually as homebrew does not allow force linking via the formula
-brew install libuv
-brew link --overwrite libuv
+# # Fix libuv manually as homebrew does not allow force linking via the formula
+# brew install libuv
+# brew link --overwrite libuv
 
 # Build metacall brew recipe
 brew install ./metacall.rb --build-from-source --overwrite -v
