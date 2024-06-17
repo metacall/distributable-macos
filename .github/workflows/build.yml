@@ -1,34 +1,65 @@
-name: MacOSX BigSur MetaCall build
-on: [push]
+name: Build MetaCall Distributable
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*.*.*"
+  pull_request:
+  workflow_dispatch:
+
 jobs:
-  build-action:
+  build:
     runs-on: macos-latest
     steps:
-      - name: Checkout upstream MetaCall Distributable MacOS 
-        uses: actions/checkout@v3
-      - run: | 
-          chmod +x ./build.sh
-          ./build.sh
-      - name: Upload build tarball production artifacts
-        uses: actions/upload-artifact@v3
-        with: 
-          name: metacall-tarball
-          path: metacall-tarball-macos-x64.zip
-          if-no-files-found: error
-  python-tests:
-    name: Python loader tests
-    needs: build-action
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-latest, macos-12, macos-10.15]
-    steps:
-      - name: Download build/artifact from cache
-        uses: actions/download-artifact@v3
+      - name: Check out the repository
+        uses: actions/checkout@v2
         with:
-          name: metacall-tarball
-          path: tarball
-      - run: | 
-          unzip tarball/metacall-tarball-macos-x64.zip
-          echo "print(\"Hello World from Python GitHub Actions\")" > py-eval-test.py
-          ./metacall.sh ./py-eval-test.py
+          fetch-depth: 0
+
+      # Clean up previous dependencies in order to avoid conflicts with brew
+      - name: Clean
+        run: |
+          brew uninstall --force --ignore-dependencies node
+          brew cleanup -s node
+          brew cleanup --prune-prefix
+          brew uninstall --force --ignore-dependencies python@3.11
+          brew cleanup -s python@3.11
+          brew cleanup --prune-prefix
+          brew uninstall --force --ignore-dependencies python@3.12
+          brew cleanup -s python@3.12
+          brew cleanup --prune-prefix
+          sudo rm -rf /System/Library/Frameworks/Python.framework/
+          brew cleanup --prune-prefix
+          sudo rm -rf /usr/local/bin/2to3
+          sudo rm -rf /usr/local/bin/2to3-3.11
+          sudo rm -rf /usr/local/bin/2to3-3.12
+          sudo rm -rf /usr/local/bin/idle3
+          sudo rm -rf /usr/local/bin/idle3.11
+          sudo rm -rf /usr/local/bin/idle3.12
+          sudo rm -rf /usr/local/bin/pydoc3
+          sudo rm -rf /usr/local/bin/pydoc3.11
+          sudo rm -rf /usr/local/bin/pydoc3.12
+          sudo rm -rf /usr/local/bin/python3
+          sudo rm -rf /usr/local/bin/python3-config
+          sudo rm -rf /usr/local/bin/python3.11
+          sudo rm -rf /usr/local/bin/python3.12
+          sudo rm -rf /usr/local/bin/python3.11-config
+          sudo rm -rf /usr/local/bin/python3.12-config
+          brew uninstall --force --ignore-dependencies ruby
+          brew cleanup -s ruby
+          brew cleanup --prune-prefix
+          sudo rm -rf $(brew --repo homebrew/core)
+
+      # Build Homebrew recipe
+      - name: Build
+        run:  ./build.sh
+
+      # Release package
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          fail_on_unmatched_files: true
+          files: pkg/*.pkg
