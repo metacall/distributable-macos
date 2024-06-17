@@ -7,6 +7,9 @@ if [[ $(command -v brew) == "" ]]; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
+# Get brew formula
+wget https://raw.githubusercontent.com/metacall/homebrew/main/metacall.rb
+
 export HOMEBREW_NO_AUTO_UPDATE=1
 
 # Fix libuv manually as homebrew does not allow force linking via the formula
