@@ -1,0 +1,16 @@
+name: MetaCall Distributable macOS Test
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: ./build.sh
+      - name: Test
+        run: ./test.sh
