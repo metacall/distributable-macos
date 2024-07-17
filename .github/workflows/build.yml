@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - feat/tests
     tags:
       - "v*.*.*"
   pull_request:
@@ -55,6 +56,13 @@ jobs:
       # Build Homebrew recipe
       - name: Build
         run:  ./build.sh
+
+      # Upload build artifact
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: metacall.pkg
+          path: pkg/*.pkg
 
       # Release package
       - name: Release
