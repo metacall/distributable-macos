@@ -1,1 +1,0 @@
-installer -pkg metacall-0.7.11.pkg -target CurrentUserHomeDirectory

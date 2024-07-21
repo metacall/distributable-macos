@@ -7,10 +7,21 @@ on:
 
 jobs:
   test:
-    runs-on: macos-latest
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@v2
-      - name: Build
-        run: ./install.sh
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: metacall.pkg
+      - name: Find and install MetaCall package
+        run: |
+          PKG_PATH=$(find . -type f -regex ".*metacall-[0-9]+\.[0-9]+\.[0-9]+\.pkg" | sort -V | tail -n 1)
+          if [ -z "$PKG_PATH" ]; then
+            echo "No matching MetaCall package found"
+            exit 1
+          fi
+          echo "Found package: $PKG_PATH"
+          installer -pkg "$PKG_PATH" -target CurrentUserHomeDirectory
       - name: Test
         run: ./test.sh
