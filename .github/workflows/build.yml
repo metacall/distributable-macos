@@ -81,7 +81,7 @@ jobs:
           name: metacall.pkg
       - name: Find and install MetaCall package
         run: |
-          PKG_PATH=$(find . -type f -regex ".*metacall-[0-9]+\.[0-9]+\.[0-9]+\.pkg" | sort -V | tail -n 1)
+          PKG_PATH=$(find . -type f -name "metacall-*.pkg" | sort -V | tail -n 1)
           if [ -z "$PKG_PATH" ]; then
             echo "No matching MetaCall package found"
             exit 1
