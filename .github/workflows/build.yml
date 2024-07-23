@@ -1,13 +1,14 @@
 name: Build MetaCall Distributable
 
 on:
+  repository_dispatch:
+    types: [test-trigger]
+  pull_request:
   push:
+    tags:
+      - 'v*.*.*'
     branches:
       - master
-    tags:
-      - "v*.*.*"
-  pull_request:
-  workflow_dispatch:
 
 jobs:
   build:
