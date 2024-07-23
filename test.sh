@@ -7,7 +7,7 @@ loc="$(dirname "$0")/tests"
 echo "NodeJS tests"
 export LOADER_SCRIPT_PATH="$loc/node"
 echo "Npm Test"
-metacall npm install metacall > out.txt
+/usr/local/bin/metacall npm install metacall > out.txt
 if [ $? -eq 1 ]; then
     cat out.txt
     echo "Test suite failed"
@@ -42,7 +42,7 @@ PATH="$PYTHONHOME:$PYTHONHOME/Scripts:$PATH"
 "$PYTHONHOME/python" -m pip install --upgrade --force-reinstall pip
 
 echo "Pip Test"
-metacall pip install metacall > out.txt
+/usr/local/bin/metacall pip install metacall > out.txt
 if [ $? -eq 1 ]; then
     cat out.txt
     echo "Test suite failed"
