@@ -1,4 +1,4 @@
-name: Build MetaCall Distributable
+name: MetaCall Distributable MacOS Release
 
 on:
   repository_dispatch:
