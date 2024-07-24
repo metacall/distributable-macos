@@ -23,4 +23,4 @@ brew install ./metacall.rb --build-from-source --overwrite -v
 mkdir pkg && cd pkg
 brew tap timsutton/formulae
 brew install brew-pkg
-brew pkg --with-deps --without-kegs metacall
+brew pkg --with-deps metacall
