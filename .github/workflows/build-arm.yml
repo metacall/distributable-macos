@@ -89,4 +89,4 @@ jobs:
           echo "Found package: $PKG_PATH"
           installer -pkg "$PKG_PATH" -target CurrentUserHomeDirectory
       - name: Test
-        run: ./test.sh
+        run: ./test-arm.sh
