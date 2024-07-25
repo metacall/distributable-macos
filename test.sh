@@ -3,6 +3,7 @@
 # The format of commands (i.e tests/node/commands.txt) must always contain a new line at the end
 
 loc="$(dirname "$0")/tests"
+source ~/.bashrc
 
 echo "NodeJS tests"
 export LOADER_SCRIPT_PATH="$loc/node"
