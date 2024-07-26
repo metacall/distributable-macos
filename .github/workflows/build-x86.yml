@@ -89,4 +89,4 @@ jobs:
           echo "Found package: $PKG_PATH"
           sudo installer -pkg "$PKG_PATH" -target /
       - name: Test
-        run: ./test-x86.sh
+        run: ./test.sh
