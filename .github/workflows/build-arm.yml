@@ -87,6 +87,6 @@ jobs:
             exit 1
           fi
           echo "Found package: $PKG_PATH"
-          installer -pkg "$PKG_PATH" -target CurrentUserHomeDirectory
+          sudo installer -pkg "$PKG_PATH" -target /
       - name: Test
         run: ./test-arm.sh
