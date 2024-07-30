@@ -65,10 +65,10 @@ jobs:
 
       # Upload build artifact
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: metacall.pkg
-          path: pkg/*.pkg
+          name: metacall-tarball
+          path: release/*
 
   test:
     needs: build
@@ -85,13 +85,15 @@ jobs:
         run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
 
       - name: Download the artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
-          name: metacall.pkg
+          name: metacall-tarball
 
       # Install from package
       - name: Install MetaCall package
         run: sudo installer -pkg "metacall-tarball-macos-${{ matrix.triplet.arch }}.pkg" -target /
+
+      # TODO: Test the tgz file
 
       # Test the package in a clean environment
       - name: Test
@@ -99,9 +101,10 @@ jobs:
 
       # Release package
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           fail_on_unmatched_files: true
-          files: pkg/*.pkg
-          # TODO: Package the zip file
+          files: |
+            metacall-tarball-macos-${{ matrix.triplet.arch }}.pkg
+            metacall-tarball-macos-${{ matrix.triplet.arch }}.tgz
