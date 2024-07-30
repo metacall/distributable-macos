@@ -38,7 +38,7 @@ METACALL_VERSION=`brew info metacall | grep -i "stable" | awk '{print $4}'`
 METACALL_ARCH=`architecture`
 
 mkdir pkg && cd pkg
-brew tap timsutton/formulae
-brew install brew-pkg
+wget https://raw.githubusercontent.com/metacall/brew-pkg/master/brew-pkg.rb
+brew install ./brew-pkg.rb --build-from-source --overwrite -v
 brew pkg --with-deps metacall
 mv metacall-${METACALL_VERSION}.pkg metacall-tarball-macos-${METACALL_ARCH}.pkg
