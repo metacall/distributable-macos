@@ -38,7 +38,7 @@ METACALL_VERSION=`brew info metacall | grep -i "stable" | awk '{print $4}' | sed
 METACALL_ARCH=`architecture`
 
 mkdir pkg && cd pkg
-curl -O https://raw.githubusercontent.com/metacall/brew-pkg/master/brew-pkg.rb
+wget https://raw.githubusercontent.com/metacall/brew-pkg/master/brew-pkg.rb
 brew install --build-from-source --overwrite --verbose ./brew-pkg.rb
 brew pkg --with-deps metacall
 mv metacall-${METACALL_VERSION}.pkg metacall-tarball-macos-${METACALL_ARCH}.pkg
