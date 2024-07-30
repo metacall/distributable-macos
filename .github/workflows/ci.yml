@@ -90,15 +90,8 @@ jobs:
           name: metacall.pkg
 
       # Install from package
-      - name: Find and install MetaCall package
-        run: |
-          PKG_PATH=$(find . -type f -name "metacall-*-${{ matrix.triplet.arch }}.pkg" | sort -V | tail -n 1)
-          if [ -z "$PKG_PATH" ]; then
-            echo "No matching MetaCall package found"
-            exit 1
-          fi
-          echo "Found package: $PKG_PATH"
-          sudo installer -pkg "$PKG_PATH" -target /
+      - name: Install MetaCall package
+        run: sudo installer -pkg "metacall-tarball-macos-${{ matrix.triplet.arch }}.pkg" -target /
 
       # Test the package in a clean environment
       - name: Test
