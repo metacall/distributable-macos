@@ -36,6 +36,7 @@ echo "Successful!!"
 echo "Python tests"
 export LOADER_SCRIPT_PATH="$loc/python"
 
+# TODO: We should put this into the launcher
 PYTHONHOME="$(dirname "$0")/metacall/runtimes/python"
 PIP_TARGET="$PYTHONHOME/Pip"
 PATH="$PYTHONHOME:$PYTHONHOME/Scripts:$PATH"

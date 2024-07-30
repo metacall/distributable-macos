@@ -11,7 +11,11 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-13, macos-14]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Check out the repository
         uses: actions/checkout@v2
@@ -55,6 +59,50 @@ jobs:
       # Build Homebrew recipe
       - name: Build
         run:  ./build.sh
+
+      - name: Test
+        run: ./test.sh
+
+      # Upload build artifact
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: metacall.pkg
+          path: pkg/*.pkg
+
+  test:
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        triplet: [
+          {os: macos-13, arch: amd64},
+          {os: macos-14, arch: arm64},
+        ]
+    runs-on: ${{ matrix.triplet.os }}
+    steps:
+      - name: Uninstall brew completely
+        run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+
+      - name: Download the artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: metacall.pkg
+
+      # Install from package
+      - name: Find and install MetaCall package
+        run: |
+          PKG_PATH=$(find . -type f -name "metacall-*-${{ matrix.triplet.arch }}.pkg" | sort -V | tail -n 1)
+          if [ -z "$PKG_PATH" ]; then
+            echo "No matching MetaCall package found"
+            exit 1
+          fi
+          echo "Found package: $PKG_PATH"
+          sudo installer -pkg "$PKG_PATH" -target /
+
+      # Test the package in a clean environment
+      - name: Test
+        run: ./test.sh
 
       # Release package
       - name: Release
