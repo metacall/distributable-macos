@@ -20,31 +20,23 @@
  *
  */
 
-const path = require("path");
-const {
-    metacall,
-    metacall_load_from_file,
-    metacall_inspect,
-} = require("metacall");
+const { metacall_load_from_file, metacall } = require('metacall');
 
-/* TODO: Monkey-patch */
+// Load the Python file
+const result = metacall_load_from_file('py', ['example.py']);
 
-module.exports = {
-    mock: function () {
-        /* Mock */
-        console.log(metacall_load_from_file("mock", ["test.mock"]));
-        console.log(metacall("three_str", "a", "b", "c"));
-    },
-    python: function () {
-        /* Python */
-        console.log(metacall_load_from_file("py", ["sum.py"]));
-        console.log(metacall_inspect());
-        console.log(
-            "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-        );
-        console.log(metacall("sum", 111111, 222222, 33334));
-        console.log(
-            "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-        );
-    },
-};
+if (result) {
+    console.log('Python file loaded successfully.');
+
+    // Test the add function from Python
+    const sum = metacall('add', 3, 4);
+    console.log(`Sum: ${sum}`); // Should print: Sum: 7
+
+    // Test the greet function from Python
+    const greeting = metacall('greet', 'World');
+    console.log(greeting); // Should print: Hello, World!
+
+    // Add more tests as needed
+} else {
+    console.error('Failed to load Python file.');
+}

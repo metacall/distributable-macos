@@ -19,9 +19,17 @@
 #	limitations under the License.
 #
 
-from metacall import metacall, metacall_load_from_file
+from metacall import metacall_load_from_file, metacall
 
-metacall_load_from_file('mock', ['test.mock']);
+result = metacall_load_from_file('node', ['utils.js'])
 
-def test():
-	return metacall('three_str', 'a', 'b', 'c');
+if result:
+    print('JavaScript file loaded successfully.')
+
+    sum_result = metacall('add', 3, 4)
+    print(f'Sum: {sum_result}')
+
+    greeting = metacall('greet', 'World')
+    print(greeting)
+else:
+    print('Failed to load JavaScript file.')
