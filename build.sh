@@ -34,7 +34,7 @@ architecture() {
     exit 1
 }
 
-METACALL_VERSION=`brew info metacall | grep -i "stable" | awk '{print $4}'`
+METACALL_VERSION=`brew info metacall | grep -i "stable" | awk '{print $4}' | sed 's/.$//'`
 METACALL_ARCH=`architecture`
 
 mkdir pkg && cd pkg
