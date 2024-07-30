@@ -7,13 +7,15 @@ if [[ $(command -v brew) == "" ]]; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
-export HOMEBREW_NO_AUTO_UPDATE=1
+# Get brew formula
+wget https://raw.githubusercontent.com/metacall/homebrew/main/metacall.rb
 
 # Build metacall brew recipe
-brew install --overwrite --verbose https://raw.githubusercontent.com/metacall/homebrew/main/metacall.rb
+export HOMEBREW_NO_AUTO_UPDATE=1
+brew install --build-from-source --overwrite --verbose ./metacall.rb
 
 # Build distributable binary using brew pkg
-architecture() {
+function architecture() {
 	local arch=$(uname -m)
 
 	case ${arch} in
