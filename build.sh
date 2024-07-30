@@ -7,41 +7,35 @@ if [[ $(command -v brew) == "" ]]; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
-# # Get brew formula
-# wget https://raw.githubusercontent.com/metacall/homebrew/main/metacall.rb
+export HOMEBREW_NO_AUTO_UPDATE=1
 
-# export HOMEBREW_NO_AUTO_UPDATE=1
+# Build metacall brew recipe
+brew install --overwrite --verbose https://raw.githubusercontent.com/metacall/homebrew/main/metacall.rb
 
-# # Build metacall brew recipe
-# brew install --build-from-source --overwrite --verbose ./metacall.rb
+# Build distributable binary using brew pkg
+architecture() {
+	local arch=$(uname -m)
 
-# # Build distributable binary using brew pkg
-# architecture() {
-# 	local arch=$(uname -m)
+	case ${arch} in
+		x86_64)
+			echo "amd64"
+			return
+			;;
+		arm64)
+			echo "arm64"
+			return
+			;;
+	esac
 
-# 	case ${arch} in
-# 		x86_64)
-# 			echo "amd64"
-# 			return
-# 			;;
-# 		arm64)
-# 			echo "arm64"
-# 			return
-# 			;;
-# 	esac
+    echo "Invalid architecture: ${arch}"
+    exit 1
+}
 
-#     echo "Invalid architecture: ${arch}"
-#     exit 1
-# }
+METACALL_VERSION=`brew info metacall | grep -i "stable" | awk '{print $4}' | sed 's/.$//'`
+METACALL_ARCH=`architecture`
 
-# METACALL_VERSION=`brew info metacall | grep -i "stable" | awk '{print $4}' | sed 's/.$//'`
-# METACALL_ARCH=`architecture`
-
-# mkdir pkg && cd pkg
-# wget https://raw.githubusercontent.com/metacall/brew-pkg/master/brew-pkg.rb
 brew tap --verbose metacall/brew-pkg
-# brew install --build-from-source --overwrite --verbose ./brew-pkg.rb
 brew install --verbose --HEAD metacall/brew-pkg/brew-pkg
-brew pkg --help
-# brew pkg --with-deps metacall
-# mv metacall-${METACALL_VERSION}.pkg metacall-tarball-macos-${METACALL_ARCH}.pkg
+mkdir pkg && cd pkg
+brew pkg --with-deps metacall
+mv metacall-${METACALL_VERSION}.pkg metacall-tarball-macos-${METACALL_ARCH}.pkg
