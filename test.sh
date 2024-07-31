@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Python tests
 py_reverse_words=$(echo 'load py tests/python/test.py\ninspect\ncall reverse_words("hello world")\nexit' | metacall | grep 'dlrow olleh')
