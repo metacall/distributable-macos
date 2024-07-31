@@ -19,17 +19,16 @@
 #	limitations under the License.
 #
 
-from metacall import metacall_load_from_file, metacall
+def reverse_words(sentence):
+    return sentence[::-1]
 
-result = metacall_load_from_file('node', ['utils.js'])
-
-if result:
-    print('JavaScript file loaded successfully.')
-
-    sum_result = metacall('add', 3, 4)
-    print(f'Sum: {sum_result}')
-
-    greeting = metacall('greet', 'World')
-    print(greeting)
-else:
-    print('Failed to load JavaScript file.')
+def factorial(n):
+    if n < 0:
+        return None
+    elif n == 0 or n == 1:
+        return 1
+    else:
+        result = 1
+        for i in range(2, n + 1):
+            result *= i
+        return result

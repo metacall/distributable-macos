@@ -1,3 +1,0 @@
-load py test.py
-call test()
-exit
