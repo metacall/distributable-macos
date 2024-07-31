@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 repl_test() {
     echo "$1"
