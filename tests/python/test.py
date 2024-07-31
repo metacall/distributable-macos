@@ -19,9 +19,16 @@
 #	limitations under the License.
 #
 
-from metacall import metacall, metacall_load_from_file
+def reverse_words(sentence):
+    return sentence[::-1]
 
-metacall_load_from_file('mock', ['test.mock']);
-
-def test():
-	return metacall('three_str', 'a', 'b', 'c');
+def factorial(n):
+    if n < 0:
+        return None
+    elif n == 0 or n == 1:
+        return 1
+    else:
+        result = 1
+        for i in range(2, n + 1):
+            result *= i
+        return result

@@ -1,72 +1,17 @@
-#!/bin/bash
+#!/bin/sh
 
-# TODO: Implement tests properly and incrementally
+echo "Python Tests"
 
-# The format of commands (i.e tests/node/commands.txt) must always contain a new line at the end
+echo "Running Python Reverse Words Test"
+echo 'load py tests/python/test.py\ninspect\ncall reverse_words("hello world")\nexit' | metacall | grep "dlrow olleh" || exit 1
 
-loc="$(dirname "$0")/tests"
+echo "Running Python Factorial Test"
+echo "load py tests/python/test.py\ninspect\ncall factorial(3)\nexit" | metacall | grep "6" || exit 1
 
-# echo "NodeJS tests"
-# export LOADER_SCRIPT_PATH="$loc/node"
-# echo "Npm Test"
-# metacall npm install metacall > out.txt
-# if [ $? -eq 1 ]; then
-#     cat out.txt
-#     echo "Test suite failed"
-#     rm out.txt
-#     exit 1
-# fi
-# cat out.txt
-# echo "Successful!!"
-# echo "Node metacall test"
-# cat "$loc/node/commands.txt" | metacall > out.txt
-# if [ $? -eq 1 ]; then
-#     cat out.txt
-#     echo "Test suite failed"
-#     rm out.txt
-#     exit 1
-# fi
-# if ! grep -q "366667" out.txt; then
-#     cat out.txt
-#     echo "Test suite failed"
-#     rm out.txt
-#     exit 1
-# fi
-# cat out.txt
-# echo "Successful!!"
+echo "NodeJS Tests"
 
-# echo "Python tests"
-# export LOADER_SCRIPT_PATH="$loc/python"
+echo "Running NodeJS Reverse Words Test"
+echo 'load node tests/node/test.js\ninspect\ncall reverseWord("hello world")\nexit' | metacall | grep "dlrow olleh" || exit 1
 
-# # TODO: We should put this into the launcher
-# PYTHONHOME="$(dirname "$0")/metacall/runtimes/python"
-# PIP_TARGET="$PYTHONHOME/Pip"
-# PATH="$PYTHONHOME:$PYTHONHOME/Scripts:$PATH"
-# "$PYTHONHOME/python" -m pip install --upgrade --force-reinstall pip
-
-# echo "Pip Test"
-# metacall pip install metacall > out.txt
-# if [ $? -eq 1 ]; then
-#     cat out.txt
-#     echo "Test suite failed"
-#     rm out.txt
-#     exit 1
-# fi
-# cat out.txt
-# echo "Successful!!"
-# echo "Python metacall test"
-# cat "$loc/python/commands.txt" | metacall > out.txt
-# if [ $? -eq 1 ]; then
-#     cat out.txt
-#     echo "Test suite failed"
-#     rm out.txt
-#     exit 1
-# fi
-# if ! grep -q "Hello World" out.txt; then
-#     cat out.txt
-#     echo "Test suite failed"
-#     rm out.txt
-#     exit 1
-# fi
-# cat out.txt
-# echo "Successful!!"
+echo "Running NodeJS Factorial Test"
+echo "load node tests/node/test.js\ninspect\ncall factorial(3)\nexit" | metacall | grep "6" || exit 1
