@@ -14,8 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-13, macos-14]
-    runs-on: ${{ matrix.os }}
+        triplet: [
+          {os: macos-13, arch: amd64},
+          {os: macos-14, arch: arm64},
+        ]
+    runs-on: ${{ matrix.triplet.os }}
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
@@ -67,7 +70,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: metacall-tarball
+          name: metacall-tarball-${{ matrix.triplet.arch }}
           path: release/*
 
   test:
@@ -92,7 +95,7 @@ jobs:
       - name: Download the artifact
         uses: actions/download-artifact@v4
         with:
-          name: metacall-tarball
+          name: metacall-tarball-${{ matrix.triplet.arch }}
 
       # Install from package
       - name: Install MetaCall package
