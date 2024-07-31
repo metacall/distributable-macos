@@ -1,23 +1,19 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-# Python tests
-py_reverse_words=$(echo 'load py tests/python/test.py\ninspect\ncall reverse_words("hello world")\nexit' | metacall | grep 'dlrow olleh')
-if [ -z "$py_reverse_words" ]; then
-    exit 1
-fi
+set -euxo pipefail
 
-py_factorial=$(echo 'load py tests/python/test.py\ninspect\ncall factorial(3)\nexit' | metacall | grep '6')
-if [ -z "$py_factorial" ]; then
-    exit 1
-fi
+echo "Python Tests"
 
-# NodeJS tests
-js_reverse_words=$(echo 'load node tests/node/test.js\ninspect\ncall reverseWord("hello world")\nexit' | metacall | grep 'dlrow olleh')
-if [ -z "$js_reverse_words" ]; then
-    exit 1
-fi
+echo "Running Python Reverse Words Test"
+echo 'load py tests/python/test.py\ninspect\ncall reverse_words("hello world")\nexit' | metacall | grep "dlrow olleh"
 
-js_factorial=$(echo 'load node tests/node/test.js\ninspect\ncall factorial(3)\nexit' | metacall | grep '6')
-if [ -z "$js_factorial" ]; then
-    exit 1
-fi
+echo "Running Python Factorial Test"
+echo "load py tests/python/test.py\ninspect\ncall factorial(3)\nexit" | metacall | grep "6"
+
+echo "NodeJS Tests"
+
+echo "Running NodeJS Reverse Words Test"
+echo 'load node tests/node/test.js\ninspect\ncall reverseWord("hello world")\nexit' | metacall | grep "dlrow olleh"
+
+echo "Running NodeJS Factorial Test"
+echo "load node tests/node/test.js\ninspect\ncall factorial(3)\nexit" | metacall | grep "6"
