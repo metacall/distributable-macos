@@ -38,6 +38,7 @@ METACALL_ARCH=`architecture`
 
 brew tap --verbose metacall/brew-pkg
 brew install --verbose --HEAD metacall/brew-pkg/brew-pkg
-mkdir pkg && cd pkg
-brew pkg --with-deps metacall
+mkdir release && cd release
+brew pkg --with-deps --compress metacall
 mv metacall-${METACALL_VERSION}.pkg metacall-tarball-macos-${METACALL_ARCH}.pkg
+mv metacall-${METACALL_VERSION}.tgz metacall-tarball-macos-${METACALL_ARCH}.tgz
