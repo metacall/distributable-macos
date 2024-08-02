@@ -1,4 +1,8 @@
-#!/usr/bin/env bash
+#!/bin/sh
+
+export DYLD_PRINT_LIBRARIES=1
+export DYLD_PRINT_LIBRARIES_POST_LAUNCH=1
+export DYLD_PRINT_RPATHS=1
 
 repl_test() {
     echo "$1"
