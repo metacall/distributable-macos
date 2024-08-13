@@ -10,6 +10,7 @@ if [[ $(command -v brew) == "" ]]; then
 fi
 
 # Get brew formula
+brew install wget
 wget https://raw.githubusercontent.com/FirePing32/metacall-homebrew/main/metacall.rb
 
 # Build metacall brew recipe
