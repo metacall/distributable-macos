@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euxo pipefail
 
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+
 # Install latest brew
 if [[ $(command -v brew) == "" ]]; then
     echo "Installing brew in order to build MetaCall"
