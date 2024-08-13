@@ -15,7 +15,7 @@ wget https://raw.githubusercontent.com/FirePing32/metacall-homebrew/main/metacal
 
 # Build metacall brew recipe
 export HOMEBREW_NO_AUTO_UPDATE=1
-brew install --build-from-source --overwrite --verbose ./metacall.rb
+brew install --build-from-source --overwrite --verbose --cleanup ./metacall.rb
 
 # Build distributable binary using brew pkg
 function architecture() {
@@ -41,7 +41,6 @@ METACALL_ARCH=`architecture`
 
 brew tap --verbose metacall/brew-pkg
 brew install --verbose --HEAD metacall/brew-pkg/brew-pkg
-brew autoremove
 mkdir release && cd release
 brew pkg --with-deps --compress metacall
 mv metacall-${METACALL_VERSION}.pkg metacall-tarball-macos-${METACALL_ARCH}.pkg
