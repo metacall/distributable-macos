@@ -15,7 +15,7 @@ wget https://raw.githubusercontent.com/FirePing32/metacall-homebrew/main/metacal
 
 # Build metacall brew recipe
 export HOMEBREW_NO_AUTO_UPDATE=1
-brew install --build-from-source --overwrite --verbose --cleanup ./metacall.rb
+brew install --build-from-source --overwrite --verbose ./metacall.rb
 
 # Build distributable binary using brew pkg
 function architecture() {
