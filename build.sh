@@ -8,7 +8,7 @@ if [[ $(command -v brew) == "" ]]; then
 fi
 
 # Get brew formula
-wget https://raw.githubusercontent.com/metacall/homebrew/main/metacall.rb
+wget https://raw.githubusercontent.com/FirePing32/metacall-homebrew/main/metacall.rb
 
 # Build metacall brew recipe
 export HOMEBREW_NO_AUTO_UPDATE=1
