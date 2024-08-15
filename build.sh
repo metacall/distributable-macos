@@ -11,7 +11,7 @@ fi
 
 # Get brew formula
 brew install wget
-wget https://raw.githubusercontent.com/FirePing32/metacall-homebrew/main/metacall.rb
+wget https://raw.githubusercontent.com/metacall/homebrew/main/metacall.rb
 
 # Build metacall brew recipe
 export HOMEBREW_NO_AUTO_UPDATE=1
@@ -39,8 +39,8 @@ function architecture() {
 METACALL_VERSION=`brew info metacall | grep -i "stable" | awk '{print $4}' | sed 's/.$//'`
 METACALL_ARCH=`architecture`
 
-brew tap --verbose metacall/brew-pkg
-brew install --verbose --HEAD metacall/brew-pkg/brew-pkg
+brew tap --verbose FirePing32/brew-pkg
+brew install --verbose --HEAD FirePing32/brew-pkg/brew-pkg
 mkdir release && cd release
 brew pkg --with-deps --compress metacall
 mv metacall-${METACALL_VERSION}.pkg metacall-tarball-macos-${METACALL_ARCH}.pkg
