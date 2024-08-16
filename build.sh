@@ -39,11 +39,11 @@ function architecture() {
 METACALL_VERSION=`brew info metacall | grep -i "stable" | awk '{print $4}' | sed 's/.$//'`
 METACALL_ARCH=`architecture`
 
+mkdir release
 brew tap --verbose metacall/brew-pkg
 brew install --verbose --HEAD metacall/brew-pkg/brew-pkg
-mkdir release && cd release
 brew pkg --with-deps --compress metacall
-mv metacall-${METACALL_VERSION}.pkg metacall-tarball-macos-${METACALL_ARCH}.pkg
+mv metacall-${METACALL_VERSION}.pkg release/metacall-tarball-macos-${METACALL_ARCH}.pkg
 
 # Extract the .tgz file
 tar -xzvf metacall-${METACALL_VERSION}.tgz
@@ -52,3 +52,4 @@ cp -r private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-
 cp private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/opt/homebrew/bin/metacall distributable/
 sed -i '' '2s|^PREFIX=.*|PREFIX=metacall-core|' "distributable/metacall"
 tar -czf metacall-tarball-macos-${METACALL_ARCH}.tgz distributable
+mv metacall-tarball-macos-${METACALL_ARCH}.tgz release/
