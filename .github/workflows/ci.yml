@@ -113,44 +113,44 @@ jobs:
           fail_on_unmatched_files: true
           files: |
             metacall-tarball-macos-${{ matrix.triplet.arch }}.pkg
-            
-  # test-tgz:
-  #   needs: build
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       triplet: [
-  #         {os: macos-13, arch: amd64},
-  #         {os: macos-14, arch: arm64},
-  #       ]
-  #   runs-on: ${{ matrix.triplet.os }}
-  #   steps:
-  #     - name: Check out the repository
-  #       uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
 
-  #     - name: Uninstall brew completely
-  #       run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+  test-tgz:
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        triplet: [
+          {os: macos-13, arch: amd64},
+          {os: macos-14, arch: arm64},
+        ]
+    runs-on: ${{ matrix.triplet.os }}
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-  #     - name: Download the artifact
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: metacall-tarball-${{ matrix.triplet.arch }}
+      - name: Uninstall brew completely
+        run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
 
-  #     # Install from package
-  #     - name: Unzip MetaCall package
-  #       run: tar -xvzf metacall-tarball-macos-${{ matrix.triplet.arch }}.tgz
+      - name: Download the artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: metacall-tarball-${{ matrix.triplet.arch }}
 
-  #     # Test the package in a clean environment
-  #     - name: Test
-  #       run: ./test.sh
+      # Install from package
+      - name: Unzip MetaCall package
+        run: tar -xvzf metacall-tarball-macos-${{ matrix.triplet.arch }}.tgz
 
-  #     # Release package
-  #     - name: Release
-  #       uses: softprops/action-gh-release@v2
-  #       if: startsWith(github.ref, 'refs/tags/')
-  #       with:
-  #         fail_on_unmatched_files: true
-  #         files: |
-  #           metacall-tarball-macos-${{ matrix.triplet.arch }}.tgz
+      # Test the package in a clean environment
+      - name: Test
+        run: export PATH="$PATH:$HOME/distributable" && ./test.sh
+
+      # Release package
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          fail_on_unmatched_files: true
+          files: |
+            metacall-tarball-macos-${{ matrix.triplet.arch }}.tgz
