@@ -67,14 +67,24 @@ cp -r private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-
 cp private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/bin/metacall distributable/
 
 # Change path of shared libraries
-python_old_lib=$(otool -L distributable/metacall-core/lib/libpy_loader.so | grep -E "Frameworks/Python.framework/Versions/[0-9]*.[0-9]*/Python" | awk '{print $1}')
-python_new_lib=$(find distributable -type f -regex "Frameworks/Python.framework/Versions/[0-9]*.[0-9]*/Python")
-install_name_tool -change "$python_old_lib" "@loader_path/../../$python_new_lib" "distributable/metacall-core/lib/libpy_loader.so"
+change_library_path() {
+  loader=$1
+  lib_regex="opt/homebrew/opt"
+  metacall_lib=distributable/metacall-core/lib/lib${loader}_loader.so
 
-ruby_old_lib=$(otool -L distributable/metacall-core/librb_loader.so | grep -E "ruby/lib/libruby.[0-9]*.[0-9]*.dylib" | awk '{print $1}')
-ruby_new_lib=$(find distributable -type f -regex "ruby/lib/libruby.[0-9]*.[0-9]*.dylib")
-install_name_tool -change "$ruby_old_lib" "$ruby_new_lib" "distributable/metacall-core/lib/librb_loader.so"
+  old_lib=$(otool -L "$metacall_lib" | grep -E "$lib_regex" | awk '{print $1}')
+  new_lib=$(find distributable -type f -regex "$lib_regex")
 
-sed -i '' '2s|^PREFIX=.*|PREFIX=metacall-core|' "distributable/metacall"
-tar -czf metacall-tarball-macos-${METACALL_ARCH}.tgz distributable
-mv metacall-tarball-macos-${METACALL_ARCH}.tgz release/
+  if [ -n "$old_lib" ] && [ -n "$new_lib" ]; then
+    install_name_tool -change "$old_lib" "@loader_path/../../$new_lib" "$metacall_lib"
+    echo "Updated $loader loader: $old_lib -> $new_lib"
+  else
+    echo "Failed to update $loader loader: Could not find the old or new library path."
+  fi
+}
+
+# Update Python loader
+change_library_path "py"
+
+# Update Ruby loader
+change_library_path "rb"
