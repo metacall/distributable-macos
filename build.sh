@@ -44,54 +44,55 @@ brew tap --verbose metacall/brew-pkg
 brew install --verbose --HEAD metacall/brew-pkg/brew-pkg
 brew pkg --with-deps --compress metacall
 mv metacall-${METACALL_VERSION}.pkg release/metacall-tarball-macos-${METACALL_ARCH}.pkg
+mv metacall-${METACALL_VERSION}.tgz release/metacall-tarball-macos-${METACALL_ARCH}.tgz
 
-# Extract the .tgz file
-tar -xzvf metacall-${METACALL_VERSION}.tgz
-mkdir distributable
+# # Extract the .tgz file
+# tar -xzvf metacall-${METACALL_VERSION}.tgz
+# mkdir distributable
 
-INSTALL_DIR=""
-# Specify install directory
-if [ "$METACALL_ARCH" = "arm64" ]; then
-    INSTALL_DIR="opt/homebrew"
-else
-    INSTALL_DIR="usr/local"
-fi
+# INSTALL_DIR=""
+# # Specify install directory
+# if [ "$METACALL_ARCH" = "arm64" ]; then
+#     INSTALL_DIR="opt/homebrew"
+# else
+#     INSTALL_DIR="usr/local"
+# fi
 
-# Copy MetaCall core
-cp -R private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/Cellar/metacall/[0-9]*.[0-9]*.[0-9]* distributable/metacall-core
-# Copy Ruby
-cp -R private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/Cellar/ruby/[0-9]*.[0-9]* distributable/ruby
-# Copy Python
-cp -R private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/Cellar/python@[0-9]*.[0-9]* distributable/python
-# Copy MetaCall binary
-cp private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/bin/metacall distributable/
+# # Copy MetaCall core
+# cp -R private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/Cellar/metacall/[0-9]*.[0-9]*.[0-9]* distributable/metacall-core
+# # Copy Ruby
+# cp -R private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/Cellar/ruby/[0-9]*.[0-9]* distributable/ruby
+# # Copy Python
+# cp -R private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/Cellar/python@[0-9]*.[0-9]* distributable/python
+# # Copy MetaCall binary
+# cp private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/bin/metacall distributable/
 
-# Change MetaCall prefix
-sed -i '' '2s|^PREFIX=.*|PREFIX=metacall-core|' "distributable/metacall"
+# # Change MetaCall prefix
+# sed -i '' '2s|^PREFIX=.*|PREFIX=metacall-core|' "distributable/metacall"
 
-# Change path of shared libraries
-change_library_path() {
-  loader=$1
-  lib_regex=$INSTALL_DIR
-  metacall_lib=distributable/metacall-core/lib/lib${loader}_loader.so
+# # Change path of shared libraries
+# change_library_path() {
+#   loader=$1
+#   lib_regex=$INSTALL_DIR
+#   metacall_lib=distributable/metacall-core/lib/lib${loader}_loader.so
 
-  old_lib=$(otool -L "$metacall_lib" | grep -E "$lib_regex" | awk '{print $1}')
-  old_lib_regex=$(echo $old_lib | awk -F'/' '{print $(NF-2)"/"$(NF-1)"/"$NF}') # Get the path suffix
-  new_lib=$(cd distributable && find . -type f -regex ".*/$old_lib_regex")
+#   old_lib=$(otool -L "$metacall_lib" | grep -E "$lib_regex" | awk '{print $1}')
+#   old_lib_regex=$(echo $old_lib | awk -F'/' '{print $(NF-2)"/"$(NF-1)"/"$NF}') # Get the path suffix
+#   new_lib=$(cd distributable && find . -type f -regex ".*/$old_lib_regex")
 
-  if [ -n "$old_lib" ] && [ -n "$new_lib" ]; then
-    install_name_tool -change "$old_lib" "@loader_path/../.$new_lib" "$metacall_lib"
-    echo "Updated $loader loader: $old_lib -> $new_lib"
-  else
-    echo "Failed to update $loader loader: Could not find the old or new library path."
-  fi
-}
+#   if [ -n "$old_lib" ] && [ -n "$new_lib" ]; then
+#     install_name_tool -change "$old_lib" "@loader_path/../.$new_lib" "$metacall_lib"
+#     echo "Updated $loader loader: $old_lib -> $new_lib"
+#   else
+#     echo "Failed to update $loader loader: Could not find the old or new library path."
+#   fi
+# }
 
-# Update Python loader
-change_library_path "py"
+# # Update Python loader
+# change_library_path "py"
 
-# Update Ruby loader
-change_library_path "rb"
+# # Update Ruby loader
+# change_library_path "rb"
 
-tar -czf metacall-tarball-macos-${METACALL_ARCH}.tgz distributable
-mv metacall-tarball-macos-${METACALL_ARCH}.tgz release/
+# tar -czf metacall-tarball-macos-${METACALL_ARCH}.tgz distributable
+# mv metacall-tarball-macos-${METACALL_ARCH}.tgz release/
