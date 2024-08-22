@@ -76,8 +76,8 @@ change_library_path() {
   metacall_lib=distributable/metacall-core/lib/lib${loader}_loader.so
 
   old_lib=$(otool -L "$metacall_lib" | grep -E "$lib_regex" | awk '{print $1}')
-  old_lib_name=$(basename "$old_lib")
-  new_lib=$(find distributable -type f -regex "$old_lib_name")
+  old_lib_regex=$(echo $old_lib | awk -F'/' '{print $(NF-2)"/"$(NF-1)"/"$NF}') # Get the path suffix
+  new_lib=$(find distributable -type f -regex ".*/$old_lib_regex")
 
   if [ -n "$old_lib" ] && [ -n "$new_lib" ]; then
     install_name_tool -change "$old_lib" "@loader_path/../../$new_lib" "$metacall_lib"
