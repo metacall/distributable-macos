@@ -80,7 +80,7 @@ change_library_path() {
   new_lib=$(cd distributable && find . -type f -regex ".*/$old_lib_regex")
 
   if [ -n "$old_lib" ] && [ -n "$new_lib" ]; then
-    install_name_tool -change "$old_lib" "@loader_path/../../$new_lib" "$metacall_lib"
+    install_name_tool -change "$old_lib" "@loader_path/../.$new_lib" "$metacall_lib"
     echo "Updated $loader loader: $old_lib -> $new_lib"
   else
     echo "Failed to update $loader loader: Could not find the old or new library path."
