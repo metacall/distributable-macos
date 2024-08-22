@@ -141,13 +141,13 @@ jobs:
         with:
           name: metacall-tarball-${{ matrix.triplet.arch }}
 
-      # Install from package
-      - name: Unzip MetaCall package
-        run: tar -xvzf metacall-tarball-macos-${{ matrix.triplet.arch }}.tgz
-
       # Test the package in a clean environment
       - name: Test
-        run: ./test.sh
+        run: |
+          mkdir distributable
+          tar -xvzf metacall-tarball-macos-${{ matrix.triplet.arch }}.tgz -C `pwd`/distributable
+          export PATH="`pwd`/distributable/bin:$PATH"
+          ./test.sh
 
       # Release package
       - name: Release
