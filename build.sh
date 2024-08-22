@@ -72,11 +72,7 @@ sed -i '' '2s|^PREFIX=.*|PREFIX=metacall-core|' "distributable/metacall"
 # Change path of shared libraries
 change_library_path() {
   loader=$1
-  if [ "$INSTALL_DIR" = "opt/homebrew" ]; then
-      lib_regex="opt/homebrew/opt"
-  else
-      lib_regex="usr/local"
-  fi
+  lib_regex=$INSTALL_DIR
   metacall_lib=distributable/metacall-core/lib/lib${loader}_loader.so
 
   old_lib=$(otool -L "$metacall_lib" | grep -E "$lib_regex" | awk '{print $1}')
