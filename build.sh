@@ -46,26 +46,29 @@ brew pkg --with-deps --compress metacall
 mv metacall-${METACALL_VERSION}.pkg release/metacall-tarball-macos-${METACALL_ARCH}.pkg
 mv metacall-${METACALL_VERSION}.tgz release/metacall-tarball-macos-${METACALL_ARCH}.tgz
 
-# Extract the .tgz file
-tar -xzvf metacall-${METACALL_VERSION}.tgz
-mkdir distributable
+# # Extract the .tgz file
+# tar -xzvf metacall-${METACALL_VERSION}.tgz
+# mkdir distributable
 
-INSTALL_DIR=""
-# Specify install directory
-if [ "$METACALL_ARCH" = "arm64" ]; then
-    INSTALL_DIR="opt/homebrew"
-else
-    INSTALL_DIR="usr/local"
-fi
+# INSTALL_DIR=""
+# # Specify install directory
+# if [ "$METACALL_ARCH" = "arm64" ]; then
+#     INSTALL_DIR="opt/homebrew"
+# else
+#     INSTALL_DIR="usr/local"
+# fi
 
-# Copy MetaCall core
-cp -r private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/Cellar/metacall/[0-9]*.[0-9]*.[0-9]* distributable/metacall-core
-# Copy Ruby
-cp -r private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/Cellar/ruby/[0-9]*.[0-9]* distributable/ruby
-# Copy Python
+# # Copy MetaCall core
+# cp -r private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/Cellar/metacall/[0-9]*.[0-9]*.[0-9]* distributable/metacall-core
+# # Copy Ruby
+# cp -r private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/Cellar/ruby/[0-9]*.[0-9]* distributable/ruby
+# # Copy Python
 # cp -r private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/Cellar/python@[0-9]*.[0-9]* distributable/python
 # # Copy MetaCall binary
 # cp private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/bin/metacall distributable/
+
+# # Change MetaCall prefix
+# sed -i '' '2s|^PREFIX=.*|PREFIX=metacall-core|' "distributable/metacall"
 
 # # Change path of shared libraries
 # change_library_path() {
@@ -90,3 +93,6 @@ cp -r private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-
 
 # # Update Ruby loader
 # change_library_path "rb"
+
+# tar -czf metacall-tarball-macos-${METACALL_ARCH}.tgz distributable
+# mv metacall-tarball-macos-${METACALL_ARCH}.tgz release/
