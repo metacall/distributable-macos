@@ -158,17 +158,17 @@ jobs:
           files: |
             metacall-tarball-macos-${{ matrix.triplet.arch }}.tgz
 
-    install-test:
-      name: Trigger Install Test Workflow
-      needs: [test-pkg, test-tgz]
-      runs-on: ubuntu-latest
-      if: startsWith(github.ref, 'refs/tags/v')
-      steps:
-        - uses: convictional/trigger-workflow-and-wait@v1.6.1
-          with:
-            owner: metacall
-            repo: install
-            github_token: ${{ secrets.G_PERSONAL_ACCESS_TOKEN }}
-            workflow_file_name: test-macos.yml
-            wait_workflow: true
-            ref: master
+  install-test:
+    name: Trigger Install Test Workflow
+    needs: [test-pkg, test-tgz]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: convictional/trigger-workflow-and-wait@v1.6.1
+        with:
+          owner: metacall
+          repo: install
+          github_token: ${{ secrets.G_PERSONAL_ACCESS_TOKEN }}
+          workflow_file_name: test-macos.yml
+          wait_workflow: true
+          ref: master
