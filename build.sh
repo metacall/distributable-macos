@@ -62,30 +62,30 @@ cp -r private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-
 # Copy Ruby
 cp -r private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/Cellar/ruby/[0-9]*.[0-9]* distributable/ruby
 # Copy Python
-cp -r private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/Cellar/python@[0-9]*.[0-9]* distributable/python
-# Copy MetaCall binary
-cp private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/bin/metacall distributable/
+# cp -r private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/Cellar/python@[0-9]*.[0-9]* distributable/python
+# # Copy MetaCall binary
+# cp private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/bin/metacall distributable/
 
-# Change path of shared libraries
-change_library_path() {
-  loader=$1
-  lib_regex="opt/homebrew/opt"
-  metacall_lib=distributable/metacall-core/lib/lib${loader}_loader.so
+# # Change path of shared libraries
+# change_library_path() {
+#   loader=$1
+#   lib_regex="opt/homebrew/opt"
+#   metacall_lib=distributable/metacall-core/lib/lib${loader}_loader.so
 
-  old_lib=$(otool -L "$metacall_lib" | grep -E "$lib_regex" | awk '{print $1}')
-  old_lib_name=$(basename "$old_lib")
-  new_lib=$(find distributable -type f -regex "$old_lib_name")
+#   old_lib=$(otool -L "$metacall_lib" | grep -E "$lib_regex" | awk '{print $1}')
+#   old_lib_name=$(basename "$old_lib")
+#   new_lib=$(find distributable -type f -regex "$old_lib_name")
 
-  if [ -n "$old_lib" ] && [ -n "$new_lib" ]; then
-    install_name_tool -change "$old_lib" "@loader_path/../../$new_lib" "$metacall_lib"
-    echo "Updated $loader loader: $old_lib -> $new_lib"
-  else
-    echo "Failed to update $loader loader: Could not find the old or new library path."
-  fi
-}
+#   if [ -n "$old_lib" ] && [ -n "$new_lib" ]; then
+#     install_name_tool -change "$old_lib" "@loader_path/../../$new_lib" "$metacall_lib"
+#     echo "Updated $loader loader: $old_lib -> $new_lib"
+#   else
+#     echo "Failed to update $loader loader: Could not find the old or new library path."
+#   fi
+# }
 
-# Update Python loader
-change_library_path "py"
+# # Update Python loader
+# change_library_path "py"
 
-# Update Ruby loader
-change_library_path "rb"
+# # Update Ruby loader
+# change_library_path "rb"
