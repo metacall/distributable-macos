@@ -58,13 +58,13 @@ else
 fi
 
 # Copy MetaCall core
-cp -R private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/Cellar/metacall/[0-9]*.[0-9]*.[0-9]* distributable/metacall-core
+cp -R Cellar/metacall/[0-9]*.[0-9]*.[0-9]* distributable/metacall-core
 # Copy Ruby
-cp -R private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/Cellar/ruby/[0-9]*.[0-9]* distributable/ruby
+cp -R Cellar/ruby/[0-9]*.[0-9]* distributable/ruby
 # Copy Python
-cp -R private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/Cellar/python@[0-9]*.[0-9]* distributable/python
+cp -R Cellar/python@[0-9]*.[0-9]* distributable/python
 # Copy MetaCall binary
-cp private/tmp/brew-pkg[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9]*-[a-z0-9]*/$INSTALL_DIR/bin/metacall distributable/
+cp bin/metacall distributable/
 
 # Change MetaCall prefix
 sed -i '' '2s|^PREFIX=.*|PREFIX=metacall-core|' "distributable/metacall"
