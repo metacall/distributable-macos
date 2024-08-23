@@ -31,7 +31,38 @@ jobs:
         run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
 
       - name: Install brew
-        run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        run: |
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          brew uninstall --force --ignore-dependencies node
+          brew cleanup -s node
+          brew cleanup --prune-prefix
+          brew uninstall --force --ignore-dependencies python@3.11
+          brew cleanup -s python@3.11
+          brew cleanup --prune-prefix
+          brew uninstall --force --ignore-dependencies python@3.12
+          brew cleanup -s python@3.12
+          brew cleanup --prune-prefix
+          sudo rm -rf /System/Library/Frameworks/Python.framework/
+          brew cleanup --prune-prefix
+          sudo rm -rf /usr/local/bin/2to3
+          sudo rm -rf /usr/local/bin/2to3-3.11
+          sudo rm -rf /usr/local/bin/2to3-3.12
+          sudo rm -rf /usr/local/bin/idle3
+          sudo rm -rf /usr/local/bin/idle3.11
+          sudo rm -rf /usr/local/bin/idle3.12
+          sudo rm -rf /usr/local/bin/pydoc3
+          sudo rm -rf /usr/local/bin/pydoc3.11
+          sudo rm -rf /usr/local/bin/pydoc3.12
+          sudo rm -rf /usr/local/bin/python3
+          sudo rm -rf /usr/local/bin/python3-config
+          sudo rm -rf /usr/local/bin/python3.11
+          sudo rm -rf /usr/local/bin/python3.12
+          sudo rm -rf /usr/local/bin/python3.11-config
+          sudo rm -rf /usr/local/bin/python3.12-config
+          brew uninstall --force --ignore-dependencies ruby
+          brew cleanup -s ruby
+          brew cleanup --prune-prefix
+          sudo rm -rf $(brew --repo homebrew/core)
 
       # Build Homebrew recipe
       - name: Build
