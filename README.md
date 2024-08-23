@@ -6,7 +6,7 @@ This repository contains shell scripts to generate MetaCall binaries for MacOS. 
 
 - MacOS operating system
 - [Homebrew](https://brew.sh/) package manager
-- [brew-pkg](https://github.com/timsutton/brew-pkg) tool
+- [brew-pkg](https://github.com/metacall/brew-pkg) tool
 
 ## Contents
 
@@ -16,6 +16,7 @@ This repository contains shell scripts to generate MetaCall binaries for MacOS. 
 
 ## Usage
 
+MetaCall supports `ARM64` and `AMD64` architectures at the moment.
 Clone the repository and build MetaCall using `./build.sh`.
 The script will perform the following actions:
 - Install MetaCall as a Homebrew formula
