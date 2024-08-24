@@ -66,9 +66,6 @@ cp -R Cellar/python@[0-9]*.[0-9]* distributable/python
 # Copy MetaCall binary
 cp bin/metacall distributable/
 
-# Change MetaCall prefix
-sed -i '' '2s|^PREFIX=.*|PREFIX=metacall-core|' "distributable/metacall"
-
 # Change path of shared libraries
 change_library_path() {
   loader=$1
