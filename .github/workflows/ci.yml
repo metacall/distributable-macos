@@ -148,9 +148,8 @@ jobs:
       # Test the package in a clean environment
       - name: Test
         run: |
-          mkdir distributable
-          tar -xvzf metacall-tarball-macos-${{ matrix.triplet.arch }}.tgz -C `pwd`/distributable
-          export PATH="`pwd`/distributable/bin:$PATH"
+          tar -xvzf metacall-tarball-macos-${{ matrix.triplet.arch }}.tgz -C `pwd`
+          export PATH="`pwd`/distributable:$PATH"
           ./test.sh
 
       # Release package
