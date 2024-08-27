@@ -11,12 +11,13 @@ on:
 
 jobs:
   build:
+    name: Build MetaCall Formula
     strategy:
       fail-fast: false
       matrix:
         triplet: [
           {os: macos-13, arch: amd64},
-          {os: macos-14, arch: arm64},
+          {os: macos-14, arch: arm64}
         ]
     runs-on: ${{ matrix.triplet.os }}
     steps:
@@ -25,6 +26,7 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Clean up previous dependencies in order to avoid conflicts with brew
       - name: Uninstall brew completely
         run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
 
@@ -77,13 +79,14 @@ jobs:
           path: release/*
 
   test-pkg:
+    name: Test Tarball PKG
     needs: build
     strategy:
       fail-fast: false
       matrix:
         triplet: [
           {os: macos-13, arch: amd64},
-          {os: macos-14, arch: arm64},
+          {os: macos-14, arch: arm64}
         ]
     runs-on: ${{ matrix.triplet.os }}
     steps:
@@ -118,13 +121,14 @@ jobs:
             metacall-tarball-macos-${{ matrix.triplet.arch }}.pkg
 
   test-tgz:
+    name: Test Tarball TGZ
     needs: build
     strategy:
       fail-fast: false
       matrix:
         triplet: [
           {os: macos-13, arch: amd64},
-          {os: macos-14, arch: arm64},
+          {os: macos-14, arch: arm64}
         ]
     runs-on: ${{ matrix.triplet.os }}
     steps:
@@ -141,13 +145,13 @@ jobs:
         with:
           name: metacall-tarball-${{ matrix.triplet.arch }}
 
-      # Install from package
-      - name: Unzip MetaCall package
-        run: tar -xvzf metacall-tarball-macos-${{ matrix.triplet.arch }}.tgz
-
       # Test the package in a clean environment
       - name: Test
-        run: export PATH="$PATH:$HOME/distributable" && ./test.sh
+        run: |
+          mkdir distributable
+          tar -xvzf metacall-tarball-macos-${{ matrix.triplet.arch }}.tgz -C `pwd`/distributable
+          export PATH="`pwd`/distributable/bin:$PATH"
+          ./test.sh
 
       # Release package
       - name: Release
