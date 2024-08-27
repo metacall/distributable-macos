@@ -1,6 +1,6 @@
 # MetaCall Distributable MacOS
 
-This repository contains shell scripts to generate MetaCall binaries for MacOS. The project automates the process of installing MetaCall as a Homebrew formula and creating a distributable package using the brew-pkg tool.
+This repository contains shell scripts to generate MetaCall binaries for MacOS. The project automates the process of installing MetaCall as a Homebrew formula and creating a distributable package using the `brew-pkg` tool.
 
 ## Prerequisites
 
