@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -euxo pipefail
 
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
-
 # Install latest brew
 if [[ $(command -v brew) == "" ]]; then
     echo "Installing brew in order to build MetaCall"
@@ -10,7 +8,8 @@ if [[ $(command -v brew) == "" ]]; then
 fi
 
 # Get brew formula
-brew install wget
+# brew install wget
+curl --help
 wget https://raw.githubusercontent.com/metacall/homebrew/main/metacall.rb
 
 # Build metacall brew recipe
