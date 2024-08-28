@@ -8,7 +8,7 @@ if [[ $(command -v brew) == "" ]]; then
 fi
 
 # Get brew formula
-curl -sLO https://raw.githubusercontent.com/metacall/homebrew/main/metacall.rb
+curl -fsSLO https://raw.githubusercontent.com/metacall/homebrew/main/metacall.rb
 
 # Build metacall brew recipe
 export HOMEBREW_NO_AUTO_UPDATE=1
