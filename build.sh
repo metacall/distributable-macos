@@ -39,6 +39,6 @@ METACALL_ARCH=`architecture`
 mkdir release
 brew tap --verbose metacall/brew-pkg
 brew install --verbose --HEAD metacall/brew-pkg/brew-pkg
-brew pkg --with-deps --compress metacall
-mv metacall-${METACALL_VERSION}.pkg release/metacall-tarball-macos-${METACALL_ARCH}.pkg
-mv metacall-${METACALL_VERSION}.tgz release/metacall-tarball-macos-${METACALL_ARCH}.tgz
+brew pkg --name metacall --relocatable --compress --additional-deps python@3.12,ruby@3.3 metacall
+mv metacall.pkg release/metacall-tarball-macos-${METACALL_ARCH}.pkg
+mv metacall.tgz release/metacall-tarball-macos-${METACALL_ARCH}.tgz

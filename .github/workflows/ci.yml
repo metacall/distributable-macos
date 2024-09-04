@@ -82,15 +82,15 @@ jobs:
           name: metacall-tarball-${{ matrix.triplet.arch }}
           path: release/*
 
-  test-pkg:
+  pkg-test:
     name: Test Tarball PKG
     needs: build
     strategy:
       fail-fast: false
       matrix:
         triplet: [
-          {os: macos-13, arch: amd64},
-          {os: macos-14, arch: arm64}
+          {os: macos-13, arch: amd64, install: "/usr/local"},
+          {os: macos-14, arch: arm64, install: "/opt/homebrew"}
         ]
     runs-on: ${{ matrix.triplet.os }}
     steps:
@@ -113,7 +113,9 @@ jobs:
 
       # Test the package in a clean environment
       - name: Test
-        run: ./test.sh
+        run: |
+          export PATH="${{ matrix.triplet.install }}/bin:$PATH"
+          ./test.sh
 
       # Release package
       - name: Release
@@ -124,15 +126,15 @@ jobs:
           files: |
             metacall-tarball-macos-${{ matrix.triplet.arch }}.pkg
 
-  test-tgz:
+  tgz-test:
     name: Test Tarball TGZ
     needs: build
     strategy:
       fail-fast: false
       matrix:
         triplet: [
-          {os: macos-13, arch: amd64},
-          {os: macos-14, arch: arm64}
+          {os: macos-13, arch: amd64, install: "/usr/local"},
+          {os: macos-14, arch: arm64, install: "/opt/homebrew"}
         ]
     runs-on: ${{ matrix.triplet.os }}
     steps:
@@ -154,7 +156,9 @@ jobs:
         run: |
           mkdir distributable
           tar -xvzf metacall-tarball-macos-${{ matrix.triplet.arch }}.tgz -C `pwd`/distributable
-          export PATH="`pwd`/distributable/bin:$PATH"
+          sudo cp -R `pwd`/distributable${{ matrix.triplet.install }}/ ${{ matrix.triplet.install }}/
+          rm -rf `pwd`/distributable
+          export PATH="${{ matrix.triplet.install }}/bin:$PATH"
           ./test.sh
 
       # Release package
@@ -168,7 +172,7 @@ jobs:
 
   install-test:
     name: Trigger Install Test Workflow
-    needs: [test-pkg, test-tgz]
+    needs: [pkg-test, tgz-test]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
