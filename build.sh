@@ -36,9 +36,11 @@ function architecture() {
 METACALL_VERSION=`brew info metacall | grep -i "stable" | awk '{print $4}' | sed 's/.$//'`
 METACALL_ARCH=`architecture`
 
+echo "Packaging MetaCall ${METACALL_VERSION} on ${METACALL_ARCH}"
+
 mkdir release
 brew tap --verbose metacall/brew-pkg
 brew install --verbose --HEAD metacall/brew-pkg/brew-pkg
-brew pkg --name metacall --relocatable --compress --additional-deps python@3.12,ruby@3.3 metacall
+brew pkg --name metacall --compress --additional-deps python@3.12,ruby@3.3 metacall
 mv metacall.pkg release/metacall-tarball-macos-${METACALL_ARCH}.pkg
 mv metacall.tgz release/metacall-tarball-macos-${METACALL_ARCH}.tgz
