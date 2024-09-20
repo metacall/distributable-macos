@@ -43,4 +43,4 @@ brew tap --verbose metacall/brew-pkg
 brew install --verbose --HEAD metacall/brew-pkg/brew-pkg
 brew pkg --name metacall --compress --additional-deps python@3.12,ruby@3.3 metacall
 mv metacall.pkg release/metacall-tarball-macos-${METACALL_ARCH}.pkg
-mv metacall.tgz release/metacall-tarball-macos-${METACALL_ARCH}.tgz
+mv metacall.tar.gz release/metacall-tarball-macos-${METACALL_ARCH}.tar.gz

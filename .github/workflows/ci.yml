@@ -155,7 +155,7 @@ jobs:
       - name: Test
         run: |
           mkdir distributable
-          tar -xvzf metacall-tarball-macos-${{ matrix.triplet.arch }}.tgz -C `pwd`/distributable
+          tar -xvzf metacall-tarball-macos-${{ matrix.triplet.arch }}.tar.gz -C `pwd`/distributable
           sudo cp -R `pwd`/distributable${{ matrix.triplet.install }}/ ${{ matrix.triplet.install }}/
           rm -rf `pwd`/distributable
           export PATH="${{ matrix.triplet.install }}/bin:$PATH"
@@ -168,7 +168,7 @@ jobs:
         with:
           fail_on_unmatched_files: true
           files: |
-            metacall-tarball-macos-${{ matrix.triplet.arch }}.tgz
+            metacall-tarball-macos-${{ matrix.triplet.arch }}.tar.gz
 
   install-test:
     name: Trigger Install Test Workflow

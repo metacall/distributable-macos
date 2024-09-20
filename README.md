@@ -29,7 +29,7 @@ This brew formulae compiles MetaCall core for ARM64 and AMD64. The installation 
 - Enhanced Metacall launcher:
     - Added more robust path detection for metacallcli based on the dsitributable type
 
-The final distributable is generated using a Homebrew extension [`brew-pkg`](https://github.com/metacall/brew-pkg). It generates a installable `.pkg` and a portable `.tgz` file. The fork includes some extra features which have been described below.
+The final distributable is generated using a Homebrew extension [`brew-pkg`](https://github.com/metacall/brew-pkg). It generates a installable `.pkg` and a portable `.tar.gz` file. The fork includes some extra features which have been described below.
 
 1. **Recursive library patching**: The function recursively processes linked libraries.
 
