@@ -46,14 +46,19 @@ jobs:
           brew uninstall --force --ignore-dependencies python@3.12
           brew cleanup -s python@3.12
           brew cleanup --prune-prefix
+          brew uninstall --force --ignore-dependencies python@3.13
+          brew cleanup -s python@3.13
+          brew cleanup --prune-prefix
           sudo rm -rf /System/Library/Frameworks/Python.framework/
           brew cleanup --prune-prefix
           sudo rm -rf /usr/local/bin/2to3
           sudo rm -rf /usr/local/bin/2to3-3.11
           sudo rm -rf /usr/local/bin/2to3-3.12
+          sudo rm -rf /usr/local/bin/2to3-3.13
           sudo rm -rf /usr/local/bin/idle3
           sudo rm -rf /usr/local/bin/idle3.11
           sudo rm -rf /usr/local/bin/idle3.12
+          sudo rm -rf /usr/local/bin/idle3.13
           sudo rm -rf /usr/local/bin/pydoc3
           sudo rm -rf /usr/local/bin/pydoc3.11
           sudo rm -rf /usr/local/bin/pydoc3.12
@@ -61,8 +66,10 @@ jobs:
           sudo rm -rf /usr/local/bin/python3-config
           sudo rm -rf /usr/local/bin/python3.11
           sudo rm -rf /usr/local/bin/python3.12
+          sudo rm -rf /usr/local/bin/python3.13
           sudo rm -rf /usr/local/bin/python3.11-config
           sudo rm -rf /usr/local/bin/python3.12-config
+          sudo rm -rf /usr/local/bin/python3.13-config
           brew uninstall --force --ignore-dependencies ruby
           brew cleanup -s ruby
           brew cleanup --prune-prefix
