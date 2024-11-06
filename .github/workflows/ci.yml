@@ -31,12 +31,8 @@ jobs:
           fetch-depth: 0
 
       # Clean up previous dependencies in order to avoid conflicts with brew
-      - name: Uninstall brew completely
-        run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
-
-      - name: Install brew
+      - name: Uninstall brew dependencies
         run: |
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           brew uninstall --force --ignore-dependencies node
           brew cleanup -s node
           brew cleanup --prune-prefix
@@ -106,8 +102,46 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Uninstall brew completely
-        run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+      # Clean up previous dependencies in order to avoid conflicts with brew
+      - name: Uninstall brew dependencies
+        run: |
+          brew uninstall --force --ignore-dependencies node
+          brew cleanup -s node
+          brew cleanup --prune-prefix
+          brew uninstall --force --ignore-dependencies python@3.11
+          brew cleanup -s python@3.11
+          brew cleanup --prune-prefix
+          brew uninstall --force --ignore-dependencies python@3.12
+          brew cleanup -s python@3.12
+          brew cleanup --prune-prefix
+          brew uninstall --force --ignore-dependencies python@3.13
+          brew cleanup -s python@3.13
+          brew cleanup --prune-prefix
+          sudo rm -rf /System/Library/Frameworks/Python.framework/
+          brew cleanup --prune-prefix
+          sudo rm -rf /usr/local/bin/2to3
+          sudo rm -rf /usr/local/bin/2to3-3.11
+          sudo rm -rf /usr/local/bin/2to3-3.12
+          sudo rm -rf /usr/local/bin/2to3-3.13
+          sudo rm -rf /usr/local/bin/idle3
+          sudo rm -rf /usr/local/bin/idle3.11
+          sudo rm -rf /usr/local/bin/idle3.12
+          sudo rm -rf /usr/local/bin/idle3.13
+          sudo rm -rf /usr/local/bin/pydoc3
+          sudo rm -rf /usr/local/bin/pydoc3.11
+          sudo rm -rf /usr/local/bin/pydoc3.12
+          sudo rm -rf /usr/local/bin/python3
+          sudo rm -rf /usr/local/bin/python3-config
+          sudo rm -rf /usr/local/bin/python3.11
+          sudo rm -rf /usr/local/bin/python3.12
+          sudo rm -rf /usr/local/bin/python3.13
+          sudo rm -rf /usr/local/bin/python3.11-config
+          sudo rm -rf /usr/local/bin/python3.12-config
+          sudo rm -rf /usr/local/bin/python3.13-config
+          brew uninstall --force --ignore-dependencies ruby
+          brew cleanup -s ruby
+          brew cleanup --prune-prefix
+          sudo rm -rf $(brew --repo homebrew/core)
 
       - name: Download the artifact
         uses: actions/download-artifact@v4
@@ -150,8 +184,46 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Clean up previous dependencies in order to avoid conflicts with brew
       - name: Uninstall brew completely
-        run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+        run: |
+          brew uninstall --force --ignore-dependencies node
+          brew cleanup -s node
+          brew cleanup --prune-prefix
+          brew uninstall --force --ignore-dependencies python@3.11
+          brew cleanup -s python@3.11
+          brew cleanup --prune-prefix
+          brew uninstall --force --ignore-dependencies python@3.12
+          brew cleanup -s python@3.12
+          brew cleanup --prune-prefix
+          brew uninstall --force --ignore-dependencies python@3.13
+          brew cleanup -s python@3.13
+          brew cleanup --prune-prefix
+          sudo rm -rf /System/Library/Frameworks/Python.framework/
+          brew cleanup --prune-prefix
+          sudo rm -rf /usr/local/bin/2to3
+          sudo rm -rf /usr/local/bin/2to3-3.11
+          sudo rm -rf /usr/local/bin/2to3-3.12
+          sudo rm -rf /usr/local/bin/2to3-3.13
+          sudo rm -rf /usr/local/bin/idle3
+          sudo rm -rf /usr/local/bin/idle3.11
+          sudo rm -rf /usr/local/bin/idle3.12
+          sudo rm -rf /usr/local/bin/idle3.13
+          sudo rm -rf /usr/local/bin/pydoc3
+          sudo rm -rf /usr/local/bin/pydoc3.11
+          sudo rm -rf /usr/local/bin/pydoc3.12
+          sudo rm -rf /usr/local/bin/python3
+          sudo rm -rf /usr/local/bin/python3-config
+          sudo rm -rf /usr/local/bin/python3.11
+          sudo rm -rf /usr/local/bin/python3.12
+          sudo rm -rf /usr/local/bin/python3.13
+          sudo rm -rf /usr/local/bin/python3.11-config
+          sudo rm -rf /usr/local/bin/python3.12-config
+          sudo rm -rf /usr/local/bin/python3.13-config
+          brew uninstall --force --ignore-dependencies ruby
+          brew cleanup -s ruby
+          brew cleanup --prune-prefix
+          sudo rm -rf $(brew --repo homebrew/core)
 
       - name: Download the artifact
         uses: actions/download-artifact@v4
