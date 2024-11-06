@@ -58,6 +58,7 @@ jobs:
           sudo rm -rf /usr/local/bin/pydoc3
           sudo rm -rf /usr/local/bin/pydoc3.11
           sudo rm -rf /usr/local/bin/pydoc3.12
+          sudo rm -rf /usr/local/bin/pydoc3.13
           sudo rm -rf /usr/local/bin/python3
           sudo rm -rf /usr/local/bin/python3-config
           sudo rm -rf /usr/local/bin/python3.11
@@ -130,6 +131,7 @@ jobs:
           sudo rm -rf /usr/local/bin/pydoc3
           sudo rm -rf /usr/local/bin/pydoc3.11
           sudo rm -rf /usr/local/bin/pydoc3.12
+          sudo rm -rf /usr/local/bin/pydoc3.13
           sudo rm -rf /usr/local/bin/python3
           sudo rm -rf /usr/local/bin/python3-config
           sudo rm -rf /usr/local/bin/python3.11
@@ -185,7 +187,7 @@ jobs:
           fetch-depth: 0
 
       # Clean up previous dependencies in order to avoid conflicts with brew
-      - name: Uninstall brew completely
+      - name: Uninstall brew dependencies
         run: |
           brew uninstall --force --ignore-dependencies node
           brew cleanup -s node
@@ -212,6 +214,7 @@ jobs:
           sudo rm -rf /usr/local/bin/pydoc3
           sudo rm -rf /usr/local/bin/pydoc3.11
           sudo rm -rf /usr/local/bin/pydoc3.12
+          sudo rm -rf /usr/local/bin/pydoc3.13
           sudo rm -rf /usr/local/bin/python3
           sudo rm -rf /usr/local/bin/python3-config
           sudo rm -rf /usr/local/bin/python3.11
