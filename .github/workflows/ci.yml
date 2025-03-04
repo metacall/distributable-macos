@@ -160,11 +160,11 @@ jobs:
           name: metacall-tarball-${{ matrix.triplet.arch }}
 
       - name: Install MetaCall from package
-        if: ${{ matrix.extension }} == 'pkg'
+        if: ${{ matrix.extension == 'pkg' }}
         run: sudo installer -pkg "metacall-tarball-macos-${{ matrix.triplet.arch }}.pkg" -target /
 
       - name: Install MetaCall from tarball
-        if: ${{ matrix.extension }} == 'tar.gz'
+        if: ${{ matrix.extension == 'tar.gz' }}
         run: |
           mkdir distributable
           tar -xvzf metacall-tarball-macos-${{ matrix.triplet.arch }}.tar.gz -C `pwd`/distributable
