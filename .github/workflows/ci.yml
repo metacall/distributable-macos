@@ -90,12 +90,13 @@ jobs:
           name: metacall-tarball-${{ matrix.triplet.arch }}
           path: release/*
 
-  pkg-test:
-    name: Test Tarball PKG
+  test:
+    name: Test
     needs: build
     strategy:
       fail-fast: false
       matrix:
+        extension: ["tar.gz", "pkg"]
         triplet: [
           {os: macos-13, arch: amd64, install: "/usr/local"},
           {os: macos-14, arch: arm64, install: "/opt/homebrew"}
@@ -158,100 +159,21 @@ jobs:
         with:
           name: metacall-tarball-${{ matrix.triplet.arch }}
 
-      # Install from package
-      - name: Install MetaCall package
+      - name: Install MetaCall from package
+        if: ${{ matrix.extension }} == 'pkg'
         run: sudo installer -pkg "metacall-tarball-macos-${{ matrix.triplet.arch }}.pkg" -target /
 
-      # Test the package in a clean environment
-      - name: Test
-        run: |
-          export PATH="${{ matrix.triplet.install }}/bin:$PATH"
-          ./test.sh
-
-      # Release package
-      - name: Release
-        uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          fail_on_unmatched_files: true
-          files: |
-            metacall-tarball-macos-${{ matrix.triplet.arch }}.pkg
-
-  tgz-test:
-    name: Test Tarball TGZ
-    needs: build
-    strategy:
-      fail-fast: false
-      matrix:
-        triplet: [
-          {os: macos-13, arch: amd64, install: "/usr/local"},
-          {os: macos-14, arch: arm64, install: "/opt/homebrew"}
-        ]
-    runs-on: ${{ matrix.triplet.os }}
-    steps:
-      - name: Check out the repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      # Clean up previous dependencies in order to avoid conflicts with brew
-      - name: Uninstall brew completely
-        run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
-
-      - name: Install brew
-        run: |
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-          brew uninstall --force --ignore-dependencies node
-          brew cleanup -s node
-          brew cleanup --prune-prefix
-          brew uninstall --force --ignore-dependencies python@3.11
-          brew cleanup -s python@3.11
-          brew cleanup --prune-prefix
-          brew uninstall --force --ignore-dependencies python@3.12
-          brew cleanup -s python@3.12
-          brew cleanup --prune-prefix
-          brew uninstall --force --ignore-dependencies python@3.13
-          brew cleanup -s python@3.13
-          brew cleanup --prune-prefix
-          sudo rm -rf /System/Library/Frameworks/Python.framework/
-          brew cleanup --prune-prefix
-          sudo rm -rf /usr/local/bin/2to3
-          sudo rm -rf /usr/local/bin/2to3-3.11
-          sudo rm -rf /usr/local/bin/2to3-3.12
-          sudo rm -rf /usr/local/bin/2to3-3.13
-          sudo rm -rf /usr/local/bin/idle3
-          sudo rm -rf /usr/local/bin/idle3.11
-          sudo rm -rf /usr/local/bin/idle3.12
-          sudo rm -rf /usr/local/bin/idle3.13
-          sudo rm -rf /usr/local/bin/pydoc3
-          sudo rm -rf /usr/local/bin/pydoc3.11
-          sudo rm -rf /usr/local/bin/pydoc3.12
-          sudo rm -rf /usr/local/bin/pydoc3.13
-          sudo rm -rf /usr/local/bin/python3
-          sudo rm -rf /usr/local/bin/python3-config
-          sudo rm -rf /usr/local/bin/python3.11
-          sudo rm -rf /usr/local/bin/python3.12
-          sudo rm -rf /usr/local/bin/python3.13
-          sudo rm -rf /usr/local/bin/python3.11-config
-          sudo rm -rf /usr/local/bin/python3.12-config
-          sudo rm -rf /usr/local/bin/python3.13-config
-          brew uninstall --force --ignore-dependencies ruby
-          brew cleanup -s ruby
-          brew cleanup --prune-prefix
-          sudo rm -rf $(brew --repo homebrew/core)
-
-      - name: Download the artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: metacall-tarball-${{ matrix.triplet.arch }}
-
-      # Test the package in a clean environment
-      - name: Test
+      - name: Install MetaCall from tarball
+        if: ${{ matrix.extension }} == 'tar.gz'
         run: |
           mkdir distributable
           tar -xvzf metacall-tarball-macos-${{ matrix.triplet.arch }}.tar.gz -C `pwd`/distributable
           sudo cp -R `pwd`/distributable${{ matrix.triplet.install }}/ ${{ matrix.triplet.install }}/
           rm -rf `pwd`/distributable
+
+      # Test the package in a clean environment
+      - name: Test
+        run: |
           export PATH="${{ matrix.triplet.install }}/bin:$PATH"
           ./test.sh
 
@@ -262,11 +184,11 @@ jobs:
         with:
           fail_on_unmatched_files: true
           files: |
-            metacall-tarball-macos-${{ matrix.triplet.arch }}.tar.gz
+            metacall-tarball-macos-${{ matrix.triplet.arch }}.${{ matrix.extension }}
 
   install-test:
     name: Trigger Install Test Workflow
-    needs: [pkg-test, tgz-test]
+    needs: test
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
