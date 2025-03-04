@@ -108,8 +108,12 @@ jobs:
           fetch-depth: 0
 
       # Clean up previous dependencies in order to avoid conflicts with brew
-      - name: Uninstall brew dependencies
+      - name: Uninstall brew completely
+        run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+
+      - name: Install brew
         run: |
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           brew uninstall --force --ignore-dependencies node
           brew cleanup -s node
           brew cleanup --prune-prefix
@@ -191,8 +195,12 @@ jobs:
           fetch-depth: 0
 
       # Clean up previous dependencies in order to avoid conflicts with brew
-      - name: Uninstall brew dependencies
+      - name: Uninstall brew completely
+        run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+
+      - name: Install brew
         run: |
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           brew uninstall --force --ignore-dependencies node
           brew cleanup -s node
           brew cleanup --prune-prefix
