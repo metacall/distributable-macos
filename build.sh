@@ -12,7 +12,7 @@ curl -fsSLO https://raw.githubusercontent.com/metacall/homebrew/main/metacall.rb
 
 # Build metacall brew recipe
 export HOMEBREW_NO_AUTO_UPDATE=1
-brew install --build-from-source --overwrite --verbose ./metacall.rb
+brew install --formula ./metacall.rb --build-from-source --verbose
 
 # Build distributable binary using brew pkg
 function architecture() {
