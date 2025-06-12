@@ -54,6 +54,9 @@ cli_test \
     "metacall" "tests/python/port.py" \
     "Python Port"
 
+# Define Python path so it can find MetaCall package
+export PYTHONPATH="$(brew --prefix)/lib/python"
+
 cli_test \
     "Running Python Executable Port Test" \
     "python3" "tests/python/port.py" \
@@ -75,6 +78,9 @@ cli_test \
     "Running NodeJS MetaCall Port Test" \
     "metacall" "tests/node/port.js" \
     "NodeJS Port"
+
+# Define NodeJS path so it can find MetaCall package
+export NODE_PATH="$(brew --prefix)/lib/node_modules"
 
 cli_test \
     "Running NodeJS Executable Port Test" \
