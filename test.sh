@@ -25,22 +25,22 @@ echo "Python Tests"
 
 repl_test \
     "Running Python Reverse Words Test" \
-    'load py tests/python/test.py\ninspect\ncall reverse_words("hello world")\nexit' \
+    'load py tests/python/repl.py\ninspect\ncall reverse_words("hello world")\nexit' \
     "dlrow olleh"
 
 repl_test \
     "Running Python Factorial Test" \
-    "load py tests/python/test.py\ninspect\ncall factorial(3)\nexit" \
+    "load py tests/python/repl.py\ninspect\ncall factorial(3)\nexit" \
     "6"
 
 echo "NodeJS Tests"
 
 repl_test \
     "Running NodeJS Reverse Words Test" \
-    'load node tests/node/test.js\ninspect\ncall reverseWord("hello world")\nexit' \
+    'load node tests/node/repl.js\ninspect\ncall reverseWord("hello world")\nexit' \
     "dlrow olleh"
 
 repl_test \
     "Running NodeJS Factorial Test" \
-    "load node tests/node/test.js\ninspect\ncall factorial(3)\nexit" \
+    "load node tests/node/repl.js\ninspect\ncall factorial(3)\nexit" \
     "6"
