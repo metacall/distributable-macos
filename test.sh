@@ -21,6 +21,22 @@ repl_test() {
     fi
 }
 
+cli_test() {
+    echo "$1"
+    TEST_COMMAND="`$2 $3`"
+    if echo "$TEST_COMMAND" | grep -q "$4"; then
+        echo "$TEST_COMMAND"
+        echo "Passed"
+    else
+        echo "Failed"
+        echo "Commands:"
+        echo "$2 $3"
+        echo "Expected: $4"
+        echo "Received: $TEST_COMMAND"
+        exit 1
+    fi
+}
+
 echo "Python Tests"
 
 repl_test \
@@ -33,6 +49,16 @@ repl_test \
     "load py tests/python/repl.py\ninspect\ncall factorial(3)\nexit" \
     "6"
 
+cli_test \
+    "Running Python MetaCall Port Test" \
+    "metacall" "tests/python/port.py" \
+    "Python Port"
+
+cli_test \
+    "Running Python Executable Port Test" \
+    "python3" "tests/python/port.py" \
+    "Python Port"
+
 echo "NodeJS Tests"
 
 repl_test \
@@ -44,3 +70,13 @@ repl_test \
     "Running NodeJS Factorial Test" \
     "load node tests/node/repl.js\ninspect\ncall factorial(3)\nexit" \
     "6"
+
+cli_test \
+    "Running NodeJS MetaCall Port Test" \
+    "metacall" "tests/node/port.js" \
+    "NodeJS Port"
+
+cli_test \
+    "Running NodeJS Executable Port Test" \
+    "node" "tests/node/port.js" \
+    "NodeJS Port"
