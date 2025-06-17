@@ -152,6 +152,9 @@ jobs:
           sudo rm -rf /usr/local/bin/python3.11-config
           sudo rm -rf /usr/local/bin/python3.12-config
           sudo rm -rf /usr/local/bin/python3.13-config
+          sudo rm -rf /usr/local/bin/pip3.11
+          sudo rm -rf /usr/local/bin/pip3.12
+          sudo rm -rf /usr/local/bin/pip3.13
           brew uninstall --force --ignore-dependencies ruby
           brew cleanup -s ruby
           brew cleanup --prune-prefix
