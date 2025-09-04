@@ -44,6 +44,9 @@ jobs:
       - name: Install brew
         run: |
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          brew uninstall --force --ignore-dependencies cmake
+          brew cleanup -s cmake
+          brew cleanup --prune-prefix
           brew uninstall --force --ignore-dependencies node
           brew cleanup -s node
           brew cleanup --prune-prefix
@@ -125,6 +128,9 @@ jobs:
       - name: Install brew
         run: |
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          brew uninstall --force --ignore-dependencies cmake
+          brew cleanup -s cmake
+          brew cleanup --prune-prefix
           brew uninstall --force --ignore-dependencies node
           brew cleanup -s node
           brew cleanup --prune-prefix
