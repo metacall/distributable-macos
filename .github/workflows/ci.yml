@@ -27,8 +27,12 @@ jobs:
       fail-fast: false
       matrix:
         triplet: [
-          {os: macos-13, arch: amd64},
-          {os: macos-14, arch: arm64}
+          {os: macos-15-intel, arch: amd64},
+          {os: macos-15, arch: arm64}
+        ]
+        build: [
+          { mode: debug, suffix: "-dbg" },
+          { mode: release, suffix: "" }
         ]
     runs-on: ${{ matrix.triplet.os }}
     steps:
@@ -91,7 +95,7 @@ jobs:
 
       # Build Homebrew recipe
       - name: Build
-        run:  ./build.sh
+        run: ./build.sh ${{ matrix.build.mode }}
 
       - name: Test
         run: ./test.sh
@@ -100,7 +104,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: metacall-tarball-${{ matrix.triplet.arch }}
+          name: metacall-tarball-${{ matrix.triplet.arch }}${{ matrix.build.suffix }}
           path: release/*
 
   test:
@@ -111,8 +115,12 @@ jobs:
       matrix:
         extension: ["tar.gz", "pkg"]
         triplet: [
-          {os: macos-13, arch: amd64, install: "/usr/local"},
-          {os: macos-14, arch: arm64, install: "/opt/homebrew"}
+          {os: macos-15-intel, arch: amd64, install: "/usr/local"},
+          {os: macos-15, arch: arm64, install: "/opt/homebrew"}
+        ]
+        build: [
+          { mode: debug, suffix: "-dbg" },
+          { mode: release, suffix: "" }
         ]
     runs-on: ${{ matrix.triplet.os }}
     steps:
@@ -176,17 +184,17 @@ jobs:
       - name: Download the artifact
         uses: actions/download-artifact@v4
         with:
-          name: metacall-tarball-${{ matrix.triplet.arch }}
+          name: metacall-tarball-${{ matrix.triplet.arch }}${{ matrix.build.suffix }}
 
       - name: Install MetaCall from package
         if: ${{ matrix.extension == 'pkg' }}
-        run: sudo installer -pkg "metacall-tarball-macos-${{ matrix.triplet.arch }}.pkg" -target /
+        run: sudo installer -pkg "metacall-tarball-macos-${{ matrix.triplet.arch }}${{ matrix.build.suffix }}.pkg" -target /
 
       - name: Install MetaCall from tarball
         if: ${{ matrix.extension == 'tar.gz' }}
         run: |
           mkdir distributable
-          tar -xvzf metacall-tarball-macos-${{ matrix.triplet.arch }}.tar.gz -C `pwd`/distributable
+          tar -xvzf metacall-tarball-macos-${{ matrix.triplet.arch }}${{ matrix.build.suffix }}.tar.gz -C `pwd`/distributable
           sudo cp -R `pwd`/distributable${{ matrix.triplet.install }}/ ${{ matrix.triplet.install }}/
           rm -rf `pwd`/distributable
 
@@ -203,7 +211,7 @@ jobs:
         with:
           fail_on_unmatched_files: true
           files: |
-            metacall-tarball-macos-${{ matrix.triplet.arch }}.${{ matrix.extension }}
+            metacall-tarball-macos-${{ matrix.triplet.arch }}${{ matrix.build.suffix }}.${{ matrix.extension }}
 
   install-test:
     name: Trigger Install Test Workflow
