@@ -37,7 +37,7 @@ jobs:
     runs-on: ${{ matrix.triplet.os }}
     steps:
       - name: Check out the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.1
         with:
           fetch-depth: 0
 
@@ -102,7 +102,7 @@ jobs:
 
       # Upload build artifact
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: metacall-tarball-${{ matrix.triplet.arch }}${{ matrix.build.suffix }}
           path: release/*
@@ -125,7 +125,7 @@ jobs:
     runs-on: ${{ matrix.triplet.os }}
     steps:
       - name: Check out the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.1
         with:
           fetch-depth: 0
 
@@ -182,7 +182,7 @@ jobs:
           sudo rm -rf $(brew --repo homebrew/core)
 
       - name: Download the artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7.0.0 
         with:
           name: metacall-tarball-${{ matrix.triplet.arch }}${{ matrix.build.suffix }}
 
@@ -206,7 +206,7 @@ jobs:
 
       # Release package
       - name: Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.5.0
         if: startsWith(github.ref, 'refs/tags/')
         with:
           fail_on_unmatched_files: true
@@ -219,7 +219,7 @@ jobs:
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
-      - uses: convictional/trigger-workflow-and-wait@v1.6.5 #CHANGED HERE
+      - uses: convictional/trigger-workflow-and-wait@v1.6.5 
         with:
           owner: metacall
           repo: install
