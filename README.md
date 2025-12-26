@@ -14,7 +14,7 @@ This repository contains shell scripts to generate MetaCall binaries for MacOS. 
 - `test.sh`: Runs various tests against MetaCall
 - `./tests`: Includes language specific tests
 
-## Implementation 
+## Implementation
 
 This brew formulae compiles MetaCall core for ARM64 and AMD64. The installation process has been optimized to install the dependencies in a dynamic way.
 
